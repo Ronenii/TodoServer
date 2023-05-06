@@ -11,13 +11,13 @@
         </File>
 
         <Console name="consoleAppender" target="SYSTEM_OUT">
-            <PatternLayout pattern=""/>
+            <PatternLayout pattern="%d{HH:mm:ss.SSS} %-5level %msg%n | request#%X{number}"/>
         </Console>
 
     </Appenders>
 
     <Loggers>
-        <Logger name="request-logger" level="INFO">
+        <Logger name="request-logger" level="DEBUG">
             <AppenderRef ref= "requestsAppender"/>
             <AppenderRef ref= "consoleAppender"/>
         </Logger>

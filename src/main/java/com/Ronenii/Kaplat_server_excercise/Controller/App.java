@@ -5,9 +5,13 @@ import com.Ronenii.Kaplat_server_excercise.Model.TODO;
 import com.Ronenii.Kaplat_server_excercise.Model.eStatus;
 import com.Ronenii.Kaplat_server_excercise.Model.eSortBy;
 import com.google.gson.Gson;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.ThreadContext;
 
 import java.util.*;
 
@@ -17,26 +21,21 @@ public class App {
     private List<TODO> todos = new ArrayList<TODO>();
     Gson gson;
     private final int INVALID = -1;
+    public static int requestCount = 0;
+    private static final Logger logger = LogManager.getLogger(App.class);
 
     public App() {
         gson = new Gson();
     }
 
-    /**
-     * 1st task
-     **/
     // Handles the GET query sent to the given endpoint.
     // Returns "OK" if user reached the endpoint.
     @GetMapping({"/todo/health"})
     @ResponseStatus(HttpStatus.OK)
-    public String healthQuery() {
+    public String healthQuery(HttpServletRequest request) {
+        logRequest(request);
         return "OK";
     }
-
-
-    /**
-     * 2nd task
-     **/
 
     // Handles the POST query sent to the given endpoint.
     // Tries to create an object in the todos list with the given parameters.
@@ -86,10 +85,6 @@ public class App {
     public boolean TodoHasCorrectTime(TODO todo) {
         return java.lang.System.currentTimeMillis() <= todo.getDueDate();
     }
-
-    /**
-     * 3rd Task
-     **/
 
     // Handles the GET query sent to the given endpoint.
     // Tries to count and return in the response the number of objects in the todos list with the given status.
@@ -145,10 +140,6 @@ public class App {
 
         return filters.contains(status);
     }
-
-    /**
-     * 4th task
-     **/
 
     // Handles the GET query sent to the given endpoint.
     // Returns a response with its body being a JSON array of the objects with the given status sorted in ascending order.
@@ -245,10 +236,6 @@ public class App {
         return "Invalid parameter: " + param + "\n";
     }
 
-    /**
-     * 5th Task
-     **/
-
     // Handles the PUT query sent to the given endpoint.
     // Tries to update the status of the object with the given id.
     // Prints out to console based on if the task succeeded or not.
@@ -301,10 +288,6 @@ public class App {
         return "ID " + id + " not found";
     }
 
-    /**
-     * 6th task
-     **/
-
     // Handles the DELETE query sent to the given endpoint.
     // Tries to delete the object with the given id.
     // Prints out to console based on if the task succeeded or not.
@@ -342,6 +325,16 @@ public class App {
             }
         }
         throw new NoSuchElementException(noIdErrorMessage(id));
+    }
+
+    // TODO: need to find a way to get response time.
+    // TODO: need to make suer info gets printed out to requests.log and debug to console.
+    public void logRequest(HttpServletRequest request) {
+        String requestCountStr = String.valueOf(++requestCount);
+        ThreadContext.put("number", requestCountStr);
+        logger.info("Incoming request | #{} | resource: {} | HTTP Verb {}", requestCountStr, request.getMethod(), request.getRequestURI());
+        logger.debug("request #{} duration: {}ms", requestCountStr, /* Response time */);
+        ThreadContext.clearAll();
     }
 }
 
