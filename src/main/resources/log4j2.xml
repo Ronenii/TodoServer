@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="warn" monitorInterval="5">
+
+    <Appenders>
+        <File name="requestsAppender" fileName="logs/requests.log" append="false">
+            <PatternLayout pattern=""/>
+        </File>
+
+        <File name="todoAppender" fileName="logs/todos.log" append="false">
+            <PatternLayout pattern=""/>
+        </File>
+
+        <Console name="consoleAppender" target="SYSTEM_OUT">
+            <PatternLayout pattern=""/>
+        </Console>
+
+    </Appenders>
+
+    <Loggers>
+        <Logger name="request-logger" level="INFO">
+            <AppenderRef ref= "requestsAppender"/>
+            <AppenderRef ref= "consoleAppender"/>
+        </Logger>
+        <Logger name="todo-logger" level="INFO">
+            <AppenderRef ref= "todoAppender"/>
+        </Logger>
+
+    </Loggers>
+
+    <Root level="INFO">
+        <AppederRef ref ="Console"/>
+    </Root>
+</Configuration>
