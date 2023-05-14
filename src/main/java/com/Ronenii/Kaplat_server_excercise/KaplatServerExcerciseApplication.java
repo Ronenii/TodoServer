@@ -10,6 +10,8 @@ import org.springframework.context.annotation.Import;
 public class KaplatServerExcerciseApplication {
 
 	public static void main(String[] args) {
+		String currentWorkingDir = System.getProperty("user.dir");
+		System.out.println("Current Working Directory: " + currentWorkingDir);
 		SpringApplication.run(KaplatServerExcerciseApplication.class, args);
 	}
 

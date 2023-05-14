@@ -24,6 +24,7 @@ public class App {
     public static int requestCount = 0;
     private static final Logger logger = LogManager.getLogger(App.class);
 
+
     public App() {
         gson = new Gson();
     }
@@ -33,7 +34,10 @@ public class App {
     @GetMapping({"/todo/health"})
     @ResponseStatus(HttpStatus.OK)
     public String healthQuery(HttpServletRequest request) {
-        logRequest(request);
+        long startTime = System.currentTimeMillis();
+        long endTime= System.currentTimeMillis();
+        long responseTime = endTime - startTime;
+        logRequest(request, responseTime);
         return "OK";
     }
 
@@ -45,7 +49,9 @@ public class App {
             value = {"/todo"},
             consumes = {"application/json"}
     )
-    public ResponseEntity<String> createTodoQuery(@RequestBody TODO todo) {
+    public ResponseEntity<String> createTodoQuery(@RequestBody TODO todo, HttpServletRequest request) {
+        long startTime = System.currentTimeMillis();
+
         Result<Integer> result = new Result<Integer>();
         String responseJson;
         HttpStatus responseStatus = null;
@@ -69,6 +75,9 @@ public class App {
 
         // send the required response
         responseJson = gson.toJson(result);
+        long endTime= System.currentTimeMillis();
+        long responseTime = endTime - startTime;
+        logRequest(request, responseTime);
         return ResponseEntity.status(responseStatus).body(responseJson);
     }
 
@@ -91,7 +100,8 @@ public class App {
     // Prints out to console based on if the task succeeded or not.
     // Returns a response with the appropriate response status and boy.
     @GetMapping({"/todo/size"})
-    public ResponseEntity<String> getTodosCountQuery(String status) {
+    public ResponseEntity<String> getTodosCountQuery(String status, HttpServletRequest request) {
+        long startTime = System.currentTimeMillis();
         Result<Integer> result = new Result<Integer>();
         String responseJson;
         HttpStatus responseStatus = null;
@@ -107,6 +117,9 @@ public class App {
         } finally {
             responseJson = gson.toJson(result);
         }
+        long endTime = System.currentTimeMillis();
+        long responseTime = endTime - startTime;
+        logRequest(request, responseTime);
         return ResponseEntity.status(responseStatus).body(responseJson);
     }
 
@@ -146,7 +159,8 @@ public class App {
     // Prints out to console based on if the task succeeded or not.
     // Returns a response with the appropriate response status and boy.
     @GetMapping({"/todo/content"})
-    public ResponseEntity<String> getTodosDataQuery(String status, String sortBy) {
+    public ResponseEntity<String> getTodosDataQuery(String status, String sortBy, HttpServletRequest request) {
+        long startTime = System.currentTimeMillis();
         ArrayList<TODO> resultArray = new ArrayList<TODO>();
         Result<String> result = new Result<String>();
         String responseJson;
@@ -163,7 +177,9 @@ public class App {
         } finally {
             responseJson = gson.toJson(result);
         }
-
+        long endTime = System.currentTimeMillis();
+        long responseTime = endTime- startTime;
+        logRequest(request, responseTime);
         return ResponseEntity.status(responseStatus).body(responseJson);
     }
 
@@ -241,7 +257,8 @@ public class App {
     // Prints out to console based on if the task succeeded or not.
     // Returns a response with the appropriate response status and boy.
     @PutMapping({"/todo"})
-    public ResponseEntity<String> updateTodoStatusQuery(int id, String status) {
+    public ResponseEntity<String> updateTodoStatusQuery(int id, String status, HttpServletRequest request) {
+        long startTime = System.currentTimeMillis();
         Result<String> result = new Result<String>();
         String responseJson, oldStatus;
         HttpStatus responseStatus = null;
@@ -262,6 +279,9 @@ public class App {
         } finally {
             responseJson = gson.toJson(result);
         }
+        long endTime = System.currentTimeMillis();
+        long responseTime = endTime - startTime;
+        logRequest(request, responseTime);
         return ResponseEntity.status(responseStatus).body(responseJson);
     }
 
@@ -293,7 +313,8 @@ public class App {
     // Prints out to console based on if the task succeeded or not.
     // Returns a response with the appropriate response status and boy.
     @DeleteMapping({"/todo"})
-    public ResponseEntity<String> deleteTodoQuery(int id) {
+    public ResponseEntity<String> deleteTodoQuery(int id, HttpServletRequest request) {
+        long startTime = System.currentTimeMillis();
         Result<Integer> result = new Result<Integer>();
         String responseJson, oldStatus;
         HttpStatus responseStatus = null;
@@ -311,7 +332,9 @@ public class App {
         } finally {
             responseJson = gson.toJson(result);
         }
-
+        long endTime = System.currentTimeMillis();
+        long responseTime = endTime - startTime;
+        logRequest(request, responseTime);
         return ResponseEntity.status(responseStatus).body(responseJson);
     }
 
@@ -327,14 +350,15 @@ public class App {
         throw new NoSuchElementException(noIdErrorMessage(id));
     }
 
-    // TODO: need to find a way to get response time.
     // TODO: need to make suer info gets printed out to requests.log and debug to console.
-    public void logRequest(HttpServletRequest request) {
+    public void logRequest(HttpServletRequest request, long responseTime) {
         String requestCountStr = String.valueOf(++requestCount);
-        ThreadContext.put("number", requestCountStr);
-        logger.info("Incoming request | #{} | resource: {} | HTTP Verb {}", requestCountStr, request.getMethod(), request.getRequestURI());
-        logger.debug("request #{} duration: {}ms", requestCountStr, /* Response time */);
-        ThreadContext.clearAll();
+        String logEnd = String.format("| request #" + requestCountStr);
+        String infoMsg = String.format("Incoming request | #%s | resource: %s | HTTP Verb %s %s", requestCountStr,  request.getRequestURI(), request.getMethod(),logEnd);
+        String debugMsg = String.format("request #%s duration: %sms %s", requestCountStr, responseTime,logEnd);
+        //ThreadContext.put("number", requestCountStr);
+        logger.info(infoMsg);
+        logger.debug(debugMsg);
     }
 }
 
