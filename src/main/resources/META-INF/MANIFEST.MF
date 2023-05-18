@@ -1,4 +1,4 @@
 Manifest-Version: 1.0
-Main-Class: com.Ronenii.Kaplat_server_excercise.KaplatServerExcerciseApp
+Main-Class: com.Ronenii.Kaplat_server_exercise.KaplatServerExcerciseApp
  lication
 

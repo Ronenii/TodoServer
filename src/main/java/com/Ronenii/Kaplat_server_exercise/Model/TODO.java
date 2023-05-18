@@ -1,4 +1,4 @@
-package com.Ronenii.Kaplat_server_excercise.Model;
+package com.Ronenii.Kaplat_server_exercise.Model;
 
 public class TODO {
     static private int idCount = 1;

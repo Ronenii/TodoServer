@@ -1,18 +1,16 @@
-package com.Ronenii.Kaplat_server_excercise.Controller;
+package com.Ronenii.Kaplat_server_exercise.Controller;
 
-import com.Ronenii.Kaplat_server_excercise.Model.Result;
-import com.Ronenii.Kaplat_server_excercise.Model.TODO;
-import com.Ronenii.Kaplat_server_excercise.Model.eStatus;
-import com.Ronenii.Kaplat_server_excercise.Model.eSortBy;
+import com.Ronenii.Kaplat_server_exercise.Model.Result;
+import com.Ronenii.Kaplat_server_exercise.Model.TODO;
+import com.Ronenii.Kaplat_server_exercise.Model.eStatus;
+import com.Ronenii.Kaplat_server_exercise.Model.eSortBy;
 import com.google.gson.Gson;
+import io.micrometer.common.util.internal.logging.Slf4JLoggerFactory;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.ThreadContext;
-
+import org.slf4j.*;
 import java.util.*;
 
 @RestController
@@ -22,7 +20,7 @@ public class App {
     Gson gson;
     private final int INVALID = -1;
     public static int requestCount = 0;
-    private static final Logger logger = LogManager.getLogger(App.class);
+    private static final Logger requestLogger = LoggerFactory.getLogger("com.Ronenii.Kaplat_server_exercise.requests-logger");
 
 
     public App() {
@@ -357,8 +355,8 @@ public class App {
         String infoMsg = String.format("Incoming request | #%s | resource: %s | HTTP Verb %s %s", requestCountStr,  request.getRequestURI(), request.getMethod(),logEnd);
         String debugMsg = String.format("request #%s duration: %sms %s", requestCountStr, responseTime,logEnd);
         //ThreadContext.put("number", requestCountStr);
-        logger.info(infoMsg);
-        logger.debug(debugMsg);
+        requestLogger.info(infoMsg);
+        requestLogger.debug(debugMsg);
     }
 }
 

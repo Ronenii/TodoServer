@@ -1,0 +1,38 @@
+<Configuration status="warn">
+    <property name="LOG_DIR" value="./logs"/>
+
+    <appender name="consoleAppender" class="ch.qos.logback.core.ConsoleAppender" >
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} %-5level %msg%n</pattern>
+        </encoder>
+    </appender>
+
+
+    <appender name="requestsAppender" class="ch.qos.logback.core.FileAppender">
+        <file>${LOG_DIR}/requests.log</file>
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} %-5level %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="todoAppender" class="ch.qos.logback.core.FileAppender">
+        <file>${LOG_DIR}/todos.log</file>
+        <encoder>
+            <Pattern>%d{HH:mm:ss.SSS} %-5level %msg%n</Pattern>
+        </encoder>
+    </appender>
+
+
+    <logger name="com.Ronenii.Kaplat_server_exercise.requests-logger" level="debug">
+        <appender-ref ref="requestsAppender" level="info"/>
+        <appender-ref ref="consoleAppender" level="debug"/>
+    </logger>
+
+    <logger name="com.Ronenii.Kaplat_server_exercise.todo-logger" level="info">
+        <appender-ref ref="todoAppender"/>
+    </logger>
+
+    <Root level="info">
+    </Root>
+
+</Configuration>
