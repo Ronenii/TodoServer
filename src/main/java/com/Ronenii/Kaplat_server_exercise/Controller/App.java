@@ -5,13 +5,16 @@ import com.Ronenii.Kaplat_server_exercise.Model.TODO;
 import com.Ronenii.Kaplat_server_exercise.Model.eStatus;
 import com.Ronenii.Kaplat_server_exercise.Model.eSortBy;
 import com.google.gson.Gson;
-import io.micrometer.common.util.internal.logging.Slf4JLoggerFactory;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.slf4j.*;
+
 import java.util.*;
+
+import ch.qos.logback.classic.Level;
+import ch.qos.logback.classic.LoggerContext;
 
 @RestController
 public class App {
@@ -20,7 +23,13 @@ public class App {
     Gson gson;
     private final int INVALID = -1;
     public static int requestCount = 0;
-    private static final Logger requestLogger = LoggerFactory.getLogger("com.Ronenii.Kaplat_server_exercise.requests-logger");
+
+    public static final String REQUEST_LOGGER = "request-logger";
+    public static final String TODO_LOGGER = "todo-logger";
+    private static final Logger requestLogger = LoggerFactory.getLogger(REQUEST_LOGGER);
+    private static final Logger todoLogger = LoggerFactory.getLogger(TODO_LOGGER);
+    private final static List VALID_LEVELS = Arrays.asList("DEBUG", "INFO", "ERROR");
+    private final static List VALID_LOGGERS = Arrays.asList(REQUEST_LOGGER, TODO_LOGGER);
 
 
     public App() {
@@ -33,9 +42,10 @@ public class App {
     @ResponseStatus(HttpStatus.OK)
     public String healthQuery(HttpServletRequest request) {
         long startTime = System.currentTimeMillis();
-        long endTime= System.currentTimeMillis();
+        logRequestInfo(request);
+        long endTime = System.currentTimeMillis();
         long responseTime = endTime - startTime;
-        logRequest(request, responseTime);
+        logRequestDebug(responseTime);
         return "OK";
     }
 
@@ -49,7 +59,7 @@ public class App {
     )
     public ResponseEntity<String> createTodoQuery(@RequestBody TODO todo, HttpServletRequest request) {
         long startTime = System.currentTimeMillis();
-
+        logRequestInfo(request);
         Result<Integer> result = new Result<Integer>();
         String responseJson;
         HttpStatus responseStatus = null;
@@ -73,9 +83,9 @@ public class App {
 
         // send the required response
         responseJson = gson.toJson(result);
-        long endTime= System.currentTimeMillis();
+        long endTime = System.currentTimeMillis();
         long responseTime = endTime - startTime;
-        logRequest(request, responseTime);
+        logRequestDebug(responseTime);
         return ResponseEntity.status(responseStatus).body(responseJson);
     }
 
@@ -100,6 +110,7 @@ public class App {
     @GetMapping({"/todo/size"})
     public ResponseEntity<String> getTodosCountQuery(String status, HttpServletRequest request) {
         long startTime = System.currentTimeMillis();
+        logRequestInfo(request);
         Result<Integer> result = new Result<Integer>();
         String responseJson;
         HttpStatus responseStatus = null;
@@ -117,7 +128,7 @@ public class App {
         }
         long endTime = System.currentTimeMillis();
         long responseTime = endTime - startTime;
-        logRequest(request, responseTime);
+        logRequestDebug(responseTime);
         return ResponseEntity.status(responseStatus).body(responseJson);
     }
 
@@ -159,6 +170,7 @@ public class App {
     @GetMapping({"/todo/content"})
     public ResponseEntity<String> getTodosDataQuery(String status, String sortBy, HttpServletRequest request) {
         long startTime = System.currentTimeMillis();
+        logRequestInfo(request);
         ArrayList<TODO> resultArray = new ArrayList<TODO>();
         Result<String> result = new Result<String>();
         String responseJson;
@@ -176,8 +188,8 @@ public class App {
             responseJson = gson.toJson(result);
         }
         long endTime = System.currentTimeMillis();
-        long responseTime = endTime- startTime;
-        logRequest(request, responseTime);
+        long responseTime = endTime - startTime;
+        logRequestDebug(responseTime);
         return ResponseEntity.status(responseStatus).body(responseJson);
     }
 
@@ -257,6 +269,7 @@ public class App {
     @PutMapping({"/todo"})
     public ResponseEntity<String> updateTodoStatusQuery(int id, String status, HttpServletRequest request) {
         long startTime = System.currentTimeMillis();
+        logRequestInfo(request);
         Result<String> result = new Result<String>();
         String responseJson, oldStatus;
         HttpStatus responseStatus = null;
@@ -279,7 +292,7 @@ public class App {
         }
         long endTime = System.currentTimeMillis();
         long responseTime = endTime - startTime;
-        logRequest(request, responseTime);
+        logRequestDebug(responseTime);
         return ResponseEntity.status(responseStatus).body(responseJson);
     }
 
@@ -313,6 +326,7 @@ public class App {
     @DeleteMapping({"/todo"})
     public ResponseEntity<String> deleteTodoQuery(int id, HttpServletRequest request) {
         long startTime = System.currentTimeMillis();
+        logRequestInfo(request);
         Result<Integer> result = new Result<Integer>();
         String responseJson, oldStatus;
         HttpStatus responseStatus = null;
@@ -332,7 +346,7 @@ public class App {
         }
         long endTime = System.currentTimeMillis();
         long responseTime = endTime - startTime;
-        logRequest(request, responseTime);
+        logRequestDebug(responseTime);
         return ResponseEntity.status(responseStatus).body(responseJson);
     }
 
@@ -349,14 +363,63 @@ public class App {
     }
 
     // TODO: need to make suer info gets printed out to requests.log and debug to console.
-    public void logRequest(HttpServletRequest request, long responseTime) {
+    public void logRequestDebug(long responseTime) {
+        String requestCountStr = String.valueOf(requestCount);
+        String logEnd = String.format("| request #" + requestCountStr);
+        String debugMsg = String.format("request #%s duration: %sms %s", requestCountStr, responseTime, logEnd);
+        requestLogger.debug(debugMsg);
+    }
+
+    public void logRequestInfo(HttpServletRequest request) {
         String requestCountStr = String.valueOf(++requestCount);
         String logEnd = String.format("| request #" + requestCountStr);
-        String infoMsg = String.format("Incoming request | #%s | resource: %s | HTTP Verb %s %s", requestCountStr,  request.getRequestURI(), request.getMethod(),logEnd);
-        String debugMsg = String.format("request #%s duration: %sms %s", requestCountStr, responseTime,logEnd);
-        //ThreadContext.put("number", requestCountStr);
+        String infoMsg = String.format("Incoming request | #%s | resource: %s | HTTP Verb %s %s", requestCountStr, request.getRequestURI(), request.getMethod(), logEnd);
         requestLogger.info(infoMsg);
-        requestLogger.debug(debugMsg);
+    }
+
+    // TODO: add request logging
+    @GetMapping({"/logs/level"})
+    public String getCurrentLogLevel(String loggerName, HttpServletRequest request) {
+        String logLevel;
+        try {
+            logLevel = getLogLevel(loggerName);
+        } catch (IllegalArgumentException e) {
+            return "Failure: " + e.getMessage();
+        }
+        return "Success: " + logLevel;
+    }
+
+    @PutMapping({"/logs/level"})
+    public String setCurrentLogLevel(String loggerName, String logLevel, HttpServletRequest request) {
+        try {
+            setLogLevel(logLevel, loggerName);
+        } catch (IllegalArgumentException e) {
+            return "Failure: " + e.getMessage();
+        }
+
+        return "Success " + logLevel;
+    }
+
+
+    private void setLogLevel(String logLevel, String loggerName) {
+        if (!VALID_LEVELS.contains(logLevel)) {
+            throw new IllegalArgumentException("No such log level");
+        }
+        if (!VALID_LOGGERS.contains(loggerName)) {
+            throw new IllegalArgumentException("No such logger name");
+        }
+        LoggerContext loggerContext = (LoggerContext) LoggerFactory.getILoggerFactory();
+        ch.qos.logback.classic.Logger logger = loggerContext.getLogger(loggerName);
+        logger.setLevel(Level.toLevel(logLevel));
+    }
+
+    private String getLogLevel(String loggerName) {
+        if (!VALID_LOGGERS.contains(loggerName)) {
+            throw new IllegalArgumentException("No such logger name");
+        }
+        LoggerContext loggerContext = (LoggerContext) LoggerFactory.getILoggerFactory();
+        ch.qos.logback.classic.Logger logger = loggerContext.getLogger(loggerName);
+        return logger.getLevel().toString();
     }
 }
 

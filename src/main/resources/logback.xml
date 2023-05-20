@@ -1,38 +1,36 @@
 <Configuration status="warn">
     <property name="LOG_DIR" value="./logs"/>
+    <property name="DATE_FORMAT" value="dd-MM-yyyy HH:mm:ss.SSS"/>
 
-    <appender name="consoleAppender" class="ch.qos.logback.core.ConsoleAppender" >
+    <appender name="consoleAppender" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
-            <pattern>%d{HH:mm:ss.SSS} %-5level %msg%n</pattern>
+            <pattern>%d{${DATE_FORMAT}} %-5level %msg%n</pattern>
         </encoder>
     </appender>
 
-
     <appender name="requestsAppender" class="ch.qos.logback.core.FileAppender">
         <file>${LOG_DIR}/requests.log</file>
+        <append>false</append>
         <encoder>
-            <pattern>%d{HH:mm:ss.SSS} %-5level %msg%n</pattern>
+            <pattern>%d{${DATE_FORMAT}} %-5level %msg%n</pattern>
         </encoder>
     </appender>
 
     <appender name="todoAppender" class="ch.qos.logback.core.FileAppender">
         <file>${LOG_DIR}/todos.log</file>
+        <append>false</append>
         <encoder>
-            <Pattern>%d{HH:mm:ss.SSS} %-5level %msg%n</Pattern>
+            <Pattern>%d{${DATE_FORMAT}} %-5level %msg%n</Pattern>
         </encoder>
     </appender>
 
-
-    <logger name="com.Ronenii.Kaplat_server_exercise.requests-logger" level="debug">
-        <appender-ref ref="requestsAppender" level="info"/>
-        <appender-ref ref="consoleAppender" level="debug"/>
+    <logger name="request-logger" level="INFO">
+        <appender-ref ref="requestsAppender"/>
+        <appender-ref ref="consoleAppender"/>
     </logger>
 
-    <logger name="com.Ronenii.Kaplat_server_exercise.todo-logger" level="info">
+    <logger name="todo-logger" level="INFO">
         <appender-ref ref="todoAppender"/>
     </logger>
-
-    <Root level="info">
-    </Root>
 
 </Configuration>
