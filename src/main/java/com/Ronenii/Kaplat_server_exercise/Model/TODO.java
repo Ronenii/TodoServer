@@ -1,5 +1,9 @@
 package com.Ronenii.Kaplat_server_exercise.Model;
 
+import java.util.HashSet;
+import java.util.NoSuchElementException;
+import java.util.Set;
+
 public class TODO {
     static private int idCount = 1;
     private int id;
@@ -13,7 +17,6 @@ public class TODO {
         this.Content = Content;
         this.dueDate = dueDate;
         this.Status = eStatus.PENDING;
-        System.out.print(this);
     }
 
     public String toString() {
@@ -77,4 +80,6 @@ public class TODO {
     public void setStatus(eStatus status) {
         Status = status;
     }
+
+
 }

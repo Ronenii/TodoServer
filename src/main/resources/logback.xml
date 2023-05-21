@@ -4,7 +4,7 @@
 
     <appender name="consoleAppender" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
-            <pattern>%d{${DATE_FORMAT}} %-5level %msg%n</pattern>
+            <pattern>%d{${DATE_FORMAT}} %level: %msg%n</pattern>
         </encoder>
     </appender>
 
@@ -12,7 +12,7 @@
         <file>${LOG_DIR}/requests.log</file>
         <append>false</append>
         <encoder>
-            <pattern>%d{${DATE_FORMAT}} %-5level %msg%n</pattern>
+            <pattern>%d{${DATE_FORMAT}} %level: %msg%n</pattern>
         </encoder>
     </appender>
 
@@ -20,7 +20,7 @@
         <file>${LOG_DIR}/todos.log</file>
         <append>false</append>
         <encoder>
-            <Pattern>%d{${DATE_FORMAT}} %-5level %msg%n</Pattern>
+            <Pattern>%d{${DATE_FORMAT}} %level: %msg%n</Pattern>
         </encoder>
     </appender>
 
