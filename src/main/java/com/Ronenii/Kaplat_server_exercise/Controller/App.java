@@ -128,7 +128,9 @@ public class App {
         Result<String> result = new Result<String>();
         String responseJson;
         HttpStatus responseStatus = null;
-
+        if (sortBy == null) {
+            sortBy = "ID";
+        }
         todoLogger.info("Extracting todos content. Filter: {} | Sorting by: {} {}", status, sortBy, logEndMSG());
         try {
             db.sortTodos(resultArray, status, sortBy);
@@ -221,7 +223,7 @@ public class App {
     }
 
     @GetMapping({"/logs/level"})
-    public String getCurrentLogLevel(String loggerName, HttpServletRequest request) {
+    public String getCurrentLogLevel(@RequestParam("logger-name") String loggerName, HttpServletRequest request) {
         long startTime = System.currentTimeMillis();
         logRequestInfo(request);
         String logLevel;
@@ -237,11 +239,12 @@ public class App {
     }
 
     @PutMapping({"/logs/level"})
-    public String setCurrentLogLevel(String loggerName, String logLevel, HttpServletRequest request) {
+    public String setCurrentLogLevel(@RequestParam("logger-name") String loggerName,
+                                     @RequestParam("logger-level") String loggerLevel, HttpServletRequest request) {
         long startTime = System.currentTimeMillis();
         logRequestInfo(request);
         try {
-            setLogLevel(logLevel, loggerName);
+            setLogLevel(loggerLevel, loggerName);
         } catch (IllegalArgumentException e) {
             return "Failure: " + e.getMessage();
         }
@@ -249,7 +252,7 @@ public class App {
         long endTime = System.currentTimeMillis();
         long responseTime = startTime - endTime;
         logRequestDebug(responseTime);
-        return "Success " + logLevel;
+        return "Success " + loggerLevel;
     }
 
     private void setLogLevel(String logLevel, String loggerName) {
@@ -278,7 +281,7 @@ public class App {
     }
 
     private void logTodoError(String errorMSG) {
-        todoLogger.error("ERROR: {} {}", errorMSG, logEndMSG());
+        todoLogger.error("{} {}", errorMSG, logEndMSG());
     }
 }
 
