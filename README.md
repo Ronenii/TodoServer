@@ -27,7 +27,7 @@ The server's default listening port is 9285.
 
 **Server endpoints:**
 
-**1) Health**
+### 1) Health
 
 `/todo/health`
 
