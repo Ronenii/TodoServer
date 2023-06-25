@@ -59,6 +59,7 @@ If the operation can be invoked (all verification went OK): the response code wi
 The result will hold the (newly) assigned TODO number
 
 If there is an error, the response will end with 409 (conflict);  the errorMessage will be set according to the error:
+
 **TODO already exists:** 
 >“Error: TODO with the title [<TODO title>] already exists in the system”
 
