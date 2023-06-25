@@ -35,6 +35,7 @@ Method: **GET**
 
 This is a sanity endpoint used to check that the server is up and running.
 
+
 **2) Create new TODO**
 
 `/todo`
@@ -62,6 +63,7 @@ Upon processing, 2 verifications occur:
 If the operation can be invoked (all verification went OK): the response code will be 200.
 The result will hold the (newly) assigned TODO number.
 
+
 **3) Get TODOs count**
 
 `/todo/size`
@@ -72,7 +74,9 @@ Query Parameter: **status**. Value: ALL, PENDING, LATE, DONE (in capital case on
 
 Returns the total number of TODOs in the system, according to the given filter.
 
+
 **4) Get TODOs data**
+
 `/todo/content`
 
 Method: **GET**
@@ -101,3 +105,27 @@ The sorting will always be ascending.
 In case sortBy is not supplied, the sorting is done by ID
 
 If no TODOs are available the result is an empty array.
+
+
+**5) Update TODO status**
+
+`/todo`
+
+Method: **PUT**
+
+Query Parameter: **id**. Number. The TODO id
+
+Query Parameter: **status**. The status to update. It can be PENDING, LATE, or DONE
+
+If the TODO exists (according to the id), its status gets updated.
+
+
+**5) Delete TODO**
+
+`/todo`
+
+Method: **DELETE**
+
+Query Parameter: **id**. Number. The TODO id
+
+Deletes a todo with the given id.
