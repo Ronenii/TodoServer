@@ -33,6 +33,7 @@ The server's default listening port is 9285.
 This is a sanity endpoint used to check that the server is up and running.
 
 Method: GET
+
 The response will be 200, and the result is the string OK (not a json, simply the string itself, case sensitive)
 
 **2) Create new TODO**
@@ -41,6 +42,7 @@ The response will be 200, and the result is the string OK (not a json, simply th
 Creates a new TODO item in the system. 
 
 Method: POST
+
 Body: json object:
 {
     title: <TODO title> //string
