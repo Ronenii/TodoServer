@@ -35,8 +35,6 @@ Method: GET
 
 This is a sanity endpoint used to check that the server is up and running.
 
-The response will be 200, and the result is the string OK (not a json, simply the string itself, case sensitive)
-
 **2) Create new TODO**
 
 `/todo`
@@ -62,15 +60,7 @@ Upon processing, 2 verifications occur:
 2) dueDate is in the future. 
 
 If the operation can be invoked (all verification went OK): the response code will be 200.
-The result will hold the (newly) assigned TODO number
-
-If there is an error, the response will end with 409 (conflict);  the errorMessage will be set according to the error:
-
-**TODO already exists:** 
->“Error: TODO with the title [<TODO title>] already exists in the system”
-
-**due date is in the past:** 
->“Error: Can’t create new TODO that its due date is in the past”
+The result will hold the (newly) assigned TODO number.
 
 **3) Get TODOs count**
 
@@ -80,10 +70,4 @@ Method: GET
 
 Returns the total number of TODOs in the system, according to the given filter.
 Query Parameter: status. Value: ALL, PENDING, LATE, DONE (in capital case only).
-
-The response will end with 200. The result will hold the actual number of TODOs according to their status.
-
-ALL includes, obviously, the total number of existing TODOs.
-
-If that status is not precisely the above four options, case sensitive, the response will end with 400 (bad request)
 
