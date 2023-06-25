@@ -77,10 +77,9 @@ Returns the total number of TODOs in the system, according to the given filter.
 
 Method: **GET**
 
-Query Parameter: **status**. Value: ALL, PENDING, LATE, DONE 
+Query Parameter: **status**. Value: ALL, PENDING, LATE, DONE.
 
-Query Parameter: **sortBy**. Value: ID, DUE_DATE, TITLE
-			Note: This is an optional query parameter. It does not have to appear. 
+Query Parameter: **sortBy**. Value: ID, DUE_DATE, TITLE (Note: This is an optional query parameter. It does not have to appear.) 
 
 The response will be a json array. The array will hold json objects that describe a single todo. 
 Each TODO object holds:
