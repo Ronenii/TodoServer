@@ -25,6 +25,6 @@ This assignment focused on these concepts:
 ## Usage
 The server's default listening port is 9285.
 
-Server endpoints:
+**Server endpoints:**
 
-___/todo/health___
+> ___/todo/health___
