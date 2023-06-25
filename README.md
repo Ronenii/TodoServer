@@ -30,18 +30,18 @@ The server's default listening port is 9285.
 **1) Health**
 > /todo/health
 
-This is a sanity endpoint used to check that the server is up and running.
-
 Method: GET
+
+This is a sanity endpoint used to check that the server is up and running.
 
 The response will be 200, and the result is the string OK (not a json, simply the string itself, case sensitive)
 
 **2) Create new TODO**
 > /todo
 
-Creates a new TODO item in the system. 
-
 Method: POST
+
+Creates a new TODO item in the system. 
 
 Body: json object:
 {
@@ -67,3 +67,18 @@ If there is an error, the response will end with 409 (conflict);  the errorMessa
 
 **due date is in the past:** 
 >“Error: Can’t create new TODO that its due date is in the past”
+
+**3) Get TODOs count**
+>> /todo/size
+
+Method: GET
+
+Returns the total number of TODOs in the system, according to the given filter.
+Query Parameter: status. Value: ALL, PENDING, LATE, DONE (in capital case only).
+
+The response will end with 200; The result will hold the actual number of TODOs according to their status.
+
+ALL includes, obviously, the total number of existing TODOs.
+
+If that status is not precisely the above four options, case sensitive, the response will end with 400 (bad request)
+
