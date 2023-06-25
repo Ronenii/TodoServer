@@ -129,3 +129,27 @@ Method: **DELETE**
 Query Parameter: **id**. Number. The TODO id
 
 Deletes a todo with the given id.
+
+
+**7) Get current logger level**
+
+`/logs/level`
+
+Method: **GET**
+
+Query Parameter: **logger-name**. The name of the logger (request-logger or todo-logger).
+
+Returns the current level of the given logger.
+
+
+**8) Get current logger level**
+
+`/logs/level`
+
+Method: **PUT**
+
+Query Parameter: **logger-name**. The name of the logger (request-logger or todo-logger).
+
+Query Parameter: **logger-level** Value: ERROR, INFO, DEBUG
+
+Sets the given logger's level to the given level.
