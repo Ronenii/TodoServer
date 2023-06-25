@@ -68,14 +68,19 @@ The result will hold the (newly) assigned TODO number.
 
 Method: **GET**
 
-Returns the total number of TODOs in the system, according to the given filter.
-
 Query Parameter: **status**. Value: ALL, PENDING, LATE, DONE (in capital case only).
+
+Returns the total number of TODOs in the system, according to the given filter.
 
 **4) Get TODOs data**
 `/todo/content`
 
 Method: **GET**
+
+Query Parameter: **status**. Value: ALL, PENDING, LATE, DONE 
+
+Query Parameter: **sortBy**. Value: ID, DUE_DATE, TITLE
+			Note: This is an optional query parameter. It does not have to appear. 
 
 The response will be a json array. The array will hold json objects that describe a single todo. 
 Each TODO object holds:
@@ -97,9 +102,3 @@ The sorting will always be ascending.
 In case sortBy is not supplied, the sorting is done by ID
 
 If no TODOs are available the result is an empty array.
-
-
-Query Parameter: **status**. Value: ALL, PENDING, LATE, DONE 
-
-Query Parameter: **sortBy**. Value: ID, DUE_DATE, TITLE
-			Note: This is an optional query parameter. It does not have to appear. 
