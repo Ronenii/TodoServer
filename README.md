@@ -28,7 +28,7 @@ The server's default listening port is 9285.
 **Server endpoints:**
 
 **1) Health**
-> /todo/health
+`/todo/health`
 
 Method: GET
 
@@ -37,7 +37,7 @@ This is a sanity endpoint used to check that the server is up and running.
 The response will be 200, and the result is the string OK (not a json, simply the string itself, case sensitive)
 
 **2) Create new TODO**
-> /todo
+`/todo`
 
 Method: POST
 
@@ -69,7 +69,7 @@ If there is an error, the response will end with 409 (conflict);  the errorMessa
 >“Error: Can’t create new TODO that its due date is in the past”
 
 **3) Get TODOs count**
->> /todo/size
+`/todo/size`
 
 Method: GET
 
