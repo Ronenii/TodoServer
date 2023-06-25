@@ -61,5 +61,6 @@ The result will hold the (newly) assigned TODO number
 If there is an error, the response will end with 409 (conflict);  the errorMessage will be set according to the error:
 **TODO already exists:** 
 >“Error: TODO with the title [<TODO title>] already exists in the system”
+
 **due date is in the past:** 
 >“Error: Can’t create new TODO that its due date is in the past”
