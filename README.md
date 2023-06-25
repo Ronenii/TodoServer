@@ -31,7 +31,7 @@ The server's default listening port is 9285.
 
 `/todo/health`
 
-Method: GET
+Method: **GET**
 
 This is a sanity endpoint used to check that the server is up and running.
 
@@ -39,7 +39,7 @@ This is a sanity endpoint used to check that the server is up and running.
 
 `/todo`
 
-Method: POST
+Method: **POST**
 
 Creates a new TODO item in the system. 
 
@@ -66,8 +66,40 @@ The result will hold the (newly) assigned TODO number.
 
 `/todo/size`
 
-Method: GET
+Method: **GET**
 
 Returns the total number of TODOs in the system, according to the given filter.
-Query Parameter: status. Value: ALL, PENDING, LATE, DONE (in capital case only).
 
+Query Parameter: **status**. Value: ALL, PENDING, LATE, DONE (in capital case only).
+
+**4) Get TODOs data**
+`/todo/content`
+
+Method: **GET**
+
+The response will be a json array. The array will hold json objects that describe a single todo. 
+Each TODO object holds:
+
+```diff
+{
+	id: integer,
+	title: string,
+	content: string,
+	status: string,
+	dueDate: timestamp (ms): long,
+}
+```
+
+The array will be sorted according to the sortBy parameter.
+
+The sorting will always be ascending.
+
+In case sortBy is not supplied, the sorting is done by ID
+
+If no TODOs are available the result is an empty array.
+
+
+Query Parameter: **status**. Value: ALL, PENDING, LATE, DONE 
+
+Query Parameter: **sortBy**. Value: ID, DUE_DATE, TITLE
+			Note: This is an optional query parameter. It does not have to appear. 
