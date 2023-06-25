@@ -45,12 +45,14 @@ Method: POST
 
 Creates a new TODO item in the system. 
 
+```diff
 Body: json object:
 {
     title: <TODO title> //string
     content: <TODO content> //string
     dueDate: <timestamp in millis> // long number
 }
+```
 
 The TODO is created with the status PENDING.
 When a new TODO is created, it is assigned by the server to the next id in turn.
