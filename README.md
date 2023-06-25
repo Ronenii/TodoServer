@@ -120,7 +120,7 @@ Query Parameter: **status**. The status to update. It can be PENDING, LATE, or D
 If the TODO exists (according to the id), its status gets updated.
 
 
-**5) Delete TODO**
+**6) Delete TODO**
 
 `/todo`
 
