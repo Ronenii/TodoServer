@@ -25,9 +25,9 @@ This assignment focused on these concepts:
 ## 3) Usage
 The server's default listening port is 9285.
 
-**3.1Server endpoints:**
+### 3.1) Server endpoints:
 
-### 3.1.1) Health
+**3.1.1) Health**
 
 `/todo/health`
 
@@ -36,7 +36,7 @@ Method: **GET**
 This is a sanity endpoint used to check that the server is up and running.
 
 
-### 3.1.2) Create new TODO
+**3.1.2) Create new TODO**
 
 `/todo`
 
@@ -64,7 +64,7 @@ If the operation can be invoked (all verification went OK): the response code wi
 The result will hold the (newly) assigned TODO number.
 
 
-### 3.1.3) Get TODOs count
+**3.1.3) Get TODOs count**
 
 `/todo/size`
 
@@ -75,7 +75,7 @@ Query Parameter: **status**. Value: ALL, PENDING, LATE, DONE (in capital case on
 Returns the total number of TODOs in the system, according to the given filter.
 
 
-### 3.1.4) Get TODOs data
+**3.1.4) Get TODOs data**
 
 `/todo/content`
 
@@ -107,7 +107,7 @@ In case sortBy is not supplied, the sorting is done by ID
 If no TODOs are available the result is an empty array.
 
 
-### 3.1.5) Update TODO status
+**3.1.5) Update TODO status**
 
 `/todo`
 
@@ -120,7 +120,7 @@ Query Parameter: **status**. The status to update. It can be PENDING, LATE, or D
 If the TODO exists (according to the id), its status gets updated.
 
 
-### 3.1.6) Delete TODO
+**3.1.6) Delete TODO**
 
 `/todo`
 
@@ -131,7 +131,7 @@ Query Parameter: **id**. Number. The TODO id
 Deletes a todo with the given id.
 
 
-### 3.1.7) Get current logger level
+**3.1.7) Get current logger level**
 
 `/logs/level`
 
@@ -142,7 +142,7 @@ Query Parameter: **logger-name**. The name of the logger (request-logger or todo
 Returns the current level of the given logger.
 
 
-### 3.1.8) Get current logger level
+**3.1.8) Get current logger level**
 
 `/logs/level`
 
