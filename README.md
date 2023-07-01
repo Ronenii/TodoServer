@@ -167,10 +167,15 @@ The response format is in json and it contains the following:
 
 ## 4) Logging
 
-The server keeps logs of all requests sent to it and all todo's added. The log files are respectively called `requests.log` & `todos.log`.
+The server keeps logs of all requests sent to it and all todos added. The log files are respectively called `requests.log` & `todos.log`.
 
 Each log will hold the following structure ({} are placeholders):
 ```diff
 {date-time} {log-level}: {log-message} | request #{request-number}
 ```
+
+## 5) Containerization
+Docker is the containerization framework used for the exercise. 
+
+### 5.1) Pull the image:
 
