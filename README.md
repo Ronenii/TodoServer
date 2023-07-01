@@ -23,11 +23,13 @@ This assignment focused on these concepts:
 3. Containerization 
 
 ## 3) Usage
+
+### 3.1) Properties
 The server's default listening port is 9285.
 
-### 3.1) Server endpoints:
+### 3.2) Server endpoints:
 
-**3.1.1) Health**
+**3.2.1) Health**
 
 `/todo/health`
 
@@ -36,7 +38,7 @@ Method: **GET**
 This is a sanity endpoint used to check that the server is up and running.
 
 
-**3.1.2) Create new TODO**
+**3.2.2) Create new TODO**
 
 `/todo`
 
@@ -64,7 +66,7 @@ If the operation can be invoked (all verification went OK): the response code wi
 The result will hold the (newly) assigned TODO number.
 
 
-**3.1.3) Get TODOs count**
+**3.2.3) Get TODOs count**
 
 `/todo/size`
 
@@ -75,7 +77,7 @@ Query Parameter: **status**. Value: ALL, PENDING, LATE, DONE (in capital case on
 Returns the total number of TODOs in the system, according to the given filter.
 
 
-**3.1.4) Get TODOs data**
+**3.2.4) Get TODOs data**
 
 `/todo/content`
 
@@ -107,7 +109,7 @@ In case sortBy is not supplied, the sorting is done by ID
 If no TODOs are available the result is an empty array.
 
 
-**3.1.5) Update TODO status**
+**3.2.5) Update TODO status**
 
 `/todo`
 
@@ -120,7 +122,7 @@ Query Parameter: **status**. The status to update. It can be PENDING, LATE, or D
 If the TODO exists (according to the id), its status gets updated.
 
 
-**3.1.6) Delete TODO**
+**3.2.6) Delete TODO**
 
 `/todo`
 
@@ -131,7 +133,7 @@ Query Parameter: **id**. Number. The TODO id
 Deletes a todo with the given id.
 
 
-**3.1.7) Get current logger level**
+**3.2.7) Get current logger level**
 
 `/logs/level`
 
@@ -142,7 +144,7 @@ Query Parameter: **logger-name**. The name of the logger (request-logger or todo
 Returns the current level of the given logger.
 
 
-**3.1.8) Get current logger level**
+**3.2.8) Get current logger level**
 
 `/logs/level`
 
@@ -153,3 +155,13 @@ Query Parameter: **logger-name**. The name of the logger (request-logger or todo
 Query Parameter: **logger-level** Value: ERROR, INFO, DEBUG
 
 Sets the given logger's level to the given level.
+
+### 3.3) Response
+The response format is in json and it contains the following:
+```diff
+{
+	result: <result of operation> : depends on the context
+	errorMessage: <message in case of error> : string
+}
+```
+
