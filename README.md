@@ -1,6 +1,6 @@
 # TodoServer
 
-## Technologies used
+## 1) Technologies used
 
 * IDE: IntelliJ
 * Programming language: Java 17
@@ -8,7 +8,7 @@
 * Logging framework: Logback (built in logger in spring boot)
 * Containerization: Docker
 
-## Overview
+## 2) Overview
 
 This is an HTTP server developed using Spring Boot and is a TODO app. TODO apps allow users to maintain a list of things they need to do.
 It features multiple endpoints which allow clients to manage the server's todos as well as setting logger levels for the server.
@@ -22,12 +22,12 @@ This assignment focused on these concepts:
 2. Logging 
 3. Containerization 
 
-## Usage
+## 3) Usage
 The server's default listening port is 9285.
 
-**Server endpoints:**
+**3.1Server endpoints:**
 
-### 1) Health
+### 3.1.1) Health
 
 `/todo/health`
 
@@ -36,7 +36,7 @@ Method: **GET**
 This is a sanity endpoint used to check that the server is up and running.
 
 
-### 2) Create new TODO
+### 3.1.2) Create new TODO
 
 `/todo`
 
@@ -64,7 +64,7 @@ If the operation can be invoked (all verification went OK): the response code wi
 The result will hold the (newly) assigned TODO number.
 
 
-### 3) Get TODOs count
+### 3.1.3) Get TODOs count
 
 `/todo/size`
 
@@ -75,7 +75,7 @@ Query Parameter: **status**. Value: ALL, PENDING, LATE, DONE (in capital case on
 Returns the total number of TODOs in the system, according to the given filter.
 
 
-### 4) Get TODOs data
+### 3.1.4) Get TODOs data
 
 `/todo/content`
 
@@ -107,7 +107,7 @@ In case sortBy is not supplied, the sorting is done by ID
 If no TODOs are available the result is an empty array.
 
 
-### 5) Update TODO status
+### 3.1.5) Update TODO status
 
 `/todo`
 
@@ -120,7 +120,7 @@ Query Parameter: **status**. The status to update. It can be PENDING, LATE, or D
 If the TODO exists (according to the id), its status gets updated.
 
 
-### 6) Delete TODO
+### 3.1.6) Delete TODO
 
 `/todo`
 
@@ -131,7 +131,7 @@ Query Parameter: **id**. Number. The TODO id
 Deletes a todo with the given id.
 
 
-### 7) Get current logger level
+### 3.1.7) Get current logger level
 
 `/logs/level`
 
@@ -142,7 +142,7 @@ Query Parameter: **logger-name**. The name of the logger (request-logger or todo
 Returns the current level of the given logger.
 
 
-### 8) Get current logger level
+### 3.1.8) Get current logger level
 
 `/logs/level`
 
