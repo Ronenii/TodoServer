@@ -190,8 +190,10 @@ In order to run the image  you need to use the following command:
 ```
 
 **5.2.1) Container properties**
+
 The container's default listening port for queries is `3769`.
 
 **5.2.1) Usage**
+
 You can use the `curl` command if you can't reach the server with normal queries.
-Other than that the usage of the server is the same as described [here](#3).
+Other than that the usage of the server is the same as described [here](# 3) Usage).
