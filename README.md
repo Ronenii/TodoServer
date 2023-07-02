@@ -186,7 +186,7 @@ docker pull ronenii/kaplat-docker-server:1.0
 ### 5.2) Run the image:
 In order to run the image  you need to use the following command:
 ```diff
- docker run --name todo-server -d -p 3769:9285 kaplat-docker-server:1.0
+ docker run --name todo-server -d -p 3769:9285 ronenii/kaplat-docker-server:1.0
 ```
 
 **5.2.1) Container properties**
