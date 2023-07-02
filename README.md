@@ -177,5 +177,21 @@ Each log will hold the following structure ({} are placeholders):
 ## 5) Containerization
 Docker is the containerization framework used for the exercise. 
 
-### 5.1) Pull the image:
+### 5.1) Pull the image
+In order to pull the image from dockerhub you need to use the following command:
+```diff
+docker pull ronenii/kaplat-docker-server:1.0
+```
 
+### 5.2) Run the image:
+In order to run the image  you need to use the following command:
+```diff
+ docker run --name todo-server -d -p 3769:9285 kaplat-docker-server:1.0
+```
+
+**5.2.1) Container properties**
+The container's default listening port for queries is `3769`.
+
+**5.2.1) Usage**
+You can use the `curl` command if you can't reach the server with normal queries.
+Other than that the usage of the server is the same as described [here](#3).
