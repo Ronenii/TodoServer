@@ -1,8 +1,6 @@
-package com.Ronenii.Kaplat_server_exercise.Model;
+package com.Ronenii.Kaplat_server_exercise.model.entities;
 
-import java.util.HashSet;
-import java.util.NoSuchElementException;
-import java.util.Set;
+import com.Ronenii.Kaplat_server_exercise.model.eStatus;
 
 public class TODO {
     static private int idCount = 1;

@@ -1,8 +1,8 @@
-package com.Ronenii.Kaplat_server_exercise.Controller;
+package com.Ronenii.Kaplat_server_exercise.controller;
 
-import com.Ronenii.Kaplat_server_exercise.Model.TODO;
-import com.Ronenii.Kaplat_server_exercise.Model.eSortBy;
-import com.Ronenii.Kaplat_server_exercise.Model.eStatus;
+import com.Ronenii.Kaplat_server_exercise.model.entities.TODO;
+import com.Ronenii.Kaplat_server_exercise.model.eSortBy;
+import com.Ronenii.Kaplat_server_exercise.model.eStatus;
 
 import java.util.*;
 

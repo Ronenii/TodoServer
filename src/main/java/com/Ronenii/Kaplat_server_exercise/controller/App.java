@@ -1,7 +1,8 @@
-package com.Ronenii.Kaplat_server_exercise.Controller;
+package com.Ronenii.Kaplat_server_exercise.controller;
 
-import com.Ronenii.Kaplat_server_exercise.Model.Result;
-import com.Ronenii.Kaplat_server_exercise.Model.TODO;
+import com.Ronenii.Kaplat_server_exercise.model.Result;
+import com.Ronenii.Kaplat_server_exercise.model.entities.TODO;
+import com.Ronenii.Kaplat_server_exercise.model.ePersistenceMethod;
 import com.google.gson.Gson;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
@@ -93,7 +94,7 @@ public class App {
     // Prints out to console based on if the task succeeded or not.
     // Returns a response with the appropriate response status and boy.
     @GetMapping({"/todo/size"})
-    public ResponseEntity<String> getTodosCountQuery(String status, HttpServletRequest request) {
+    public ResponseEntity<String> getTodosCountQuery(String status, String persistenceMethod, HttpServletRequest request) {
         long startTime = System.currentTimeMillis();
         logRequestInfo(request);
         Result<Integer> result = new Result<Integer>();
@@ -101,6 +102,7 @@ public class App {
         HttpStatus responseStatus = null;
         int instances;
         try {
+            ePersistenceMethod persistenceMethodEnum = ePersistenceMethod.valueOf(persistenceMethod);
             instances = db.countTodoInstances(status);
             responseStatus = HttpStatus.OK;
             result.setResult(instances);

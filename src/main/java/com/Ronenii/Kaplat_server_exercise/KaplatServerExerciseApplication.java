@@ -1,6 +1,6 @@
 package com.Ronenii.Kaplat_server_exercise;
 
-import com.Ronenii.Kaplat_server_exercise.Controller.App;
+import com.Ronenii.Kaplat_server_exercise.controller.App;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Import;

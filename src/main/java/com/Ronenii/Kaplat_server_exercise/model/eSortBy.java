@@ -1,4 +1,4 @@
-package com.Ronenii.Kaplat_server_exercise.Model;
+package com.Ronenii.Kaplat_server_exercise.model;
 
 public enum eSortBy {
     ID,
