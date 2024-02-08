@@ -2,7 +2,7 @@ package com.Ronenii.Kaplat_server_exercise.controller;
 
 import com.Ronenii.Kaplat_server_exercise.model.entities.TODO;
 import com.Ronenii.Kaplat_server_exercise.model.eSortBy;
-import com.Ronenii.Kaplat_server_exercise.model.eStatus;
+import com.Ronenii.Kaplat_server_exercise.model.eState;
 
 import java.util.*;
 
@@ -22,12 +22,12 @@ public class DB {
         if (!isValidStatus(status)) {
             throw new IllegalArgumentException(invalidParameterMessage(status));
         }
-        eStatus newStatus = eStatus.valueOf(status);
+        eState newStatus = eState.valueOf(status);
         String oldStatus;
         for (TODO t : todos) {
-            if (t.getId() == id) {
-                oldStatus = t.getStatus().toString();
-                t.setStatus(newStatus);
+            if (t.getRawid() == id) {
+                oldStatus = t.getState().toString();
+                t.setState(newStatus);
                 return oldStatus;
             }
         }
@@ -43,7 +43,7 @@ public class DB {
     // Throws an exception if id doesn't exist.
     public void deleteTodo(int id) {
         for (TODO t : todos) {
-            if (t.getId() == id) {
+            if (t.getRawid() == id) {
                 todos.remove(t);
                 return;
             }
@@ -76,7 +76,7 @@ public class DB {
 
     // check if the to-do has a valid dueDate
     public boolean TodoHasCorrectTime(TODO todo) {
-        return java.lang.System.currentTimeMillis() <= todo.getDueDate();
+        return java.lang.System.currentTimeMillis() <= todo.getDuedate();
     }
 
     // Counts the number of instances of to-dos with the given filter in the to-do list.
@@ -87,10 +87,10 @@ public class DB {
         } else if (filter.equals("ALL")) {
             return todos.size();
         } else {
-            eStatus status = eStatus.valueOf(filter);
+            eState status = eState.valueOf(filter);
             int instances = 0;
             for (TODO t : todos) {
-                if (t.getStatus() == status) {
+                if (t.getState() == status) {
                     instances++;
                 }
             }
@@ -138,29 +138,19 @@ public class DB {
     // Adds the to-dos to the resultArray based on if they have the same status as the given "status" parameter
     public void addToArrayByStatus(ArrayList<TODO> resultArray, String status) {
         for (TODO t : todos) {
-            if (eStatus.valueOf(status) == t.getStatus()) {
+            if (eState.valueOf(status) == t.getState()) {
                 resultArray.add(t);
             }
         }
     }
 
     // Sort resultArray based on the possible sortBy filter given
-    public void SortTodosWithSortby(ArrayList<TODO> resultArray, String sortBy) {
-        if (sortBy.equals("")) {
+    public void SortTodosWithSortby(List<TODO> resultArray, String sortBy) {
+        if (sortBy.isEmpty()) {
             sortBy = "ID";
         }
         eSortBy newSortBy = eSortBy.valueOf(sortBy);
-        switch (newSortBy) {
-            case ID:
-                resultArray.sort(Comparator.comparing(TODO::getId));
-                break;
-            case DUE_DATE:
-                resultArray.sort(Comparator.comparing(TODO::getDueDate));
-                break;
-            case TITLE:
-                resultArray.sort(Comparator.comparing(TODO::getTitle));
-                break;
-        }
+
     }
 
     public String invalidParameterMessage(String param) {

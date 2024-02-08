@@ -1,28 +1,28 @@
 package com.Ronenii.Kaplat_server_exercise.model.entities;
 
-import com.Ronenii.Kaplat_server_exercise.model.eStatus;
+import com.Ronenii.Kaplat_server_exercise.model.eState;
 
 public class TODO {
     static private int idCount = 1;
-    private int id;
-    private String Title, Content;
-    private long dueDate;
-    private eStatus Status;
+    private Integer rawid;
+    private String title, content;
+    private Long duedate;
+    private eState state;
 
     public TODO(String Title, String Content, long dueDate) {
-        this.id = idCount++;
-        this.Title = Title;
-        this.Content = Content;
-        this.dueDate = dueDate;
-        this.Status = eStatus.PENDING;
+        this.rawid = idCount++;
+        this.title = Title;
+        this.content = Content;
+        this.duedate = dueDate;
+        this.state = eState.PENDING;
     }
 
     public String toString() {
-        return "TODO(id=" + id +
-                ", Title=" + this.Title +
-                ", Content=" + this.Content +
-                ", DueDate=" + this.dueDate +
-                ", Status=" + this.Status + ")";
+        return "TODO(id=" + rawid +
+                ", Title=" + this.title +
+                ", Content=" + this.content +
+                ", DueDate=" + this.duedate +
+                ", Status=" + this.state + ")";
     }
 
     public static int getIdCount() {
@@ -33,50 +33,50 @@ public class TODO {
         TODO.idCount = idCount;
     }
 
-    public int getId() {
-        return id;
+    public Integer getRawid() {
+        return rawid;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setRawid(Integer rawid) {
+        this.rawid = rawid;
     }
 
     public static void revokeId() {idCount--;}
 
     public void giveId() {
-        this.id = idCount++;
+        this.rawid = idCount++;
     }
 
     public String getTitle() {
-        return Title;
+        return title;
     }
 
     public void setTitle(String title) {
-        Title = title;
+        this.title = title;
     }
 
     public String getContent() {
-        return Content;
+        return content;
     }
 
     public void setContent(String content) {
-        Content = content;
+        this.content = content;
     }
 
-    public long getDueDate() {
-        return dueDate;
+    public Long getDuedate() {
+        return duedate;
     }
 
-    public void setDueDate(long dueDate) {
-        this.dueDate = dueDate;
+    public void setDuedate(Long duedate) {
+        this.duedate = duedate;
     }
 
-    public eStatus getStatus() {
-        return Status;
+    public eState getState() {
+        return state;
     }
 
-    public void setStatus(eStatus status) {
-        Status = status;
+    public void setState(eState state) {
+        this.state = state;
     }
 
 

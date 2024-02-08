@@ -1,6 +1,6 @@
 package com.Ronenii.Kaplat_server_exercise.model;
 
-public enum eStatus {
+public enum eState {
     PENDING,
     LATE,
     DONE

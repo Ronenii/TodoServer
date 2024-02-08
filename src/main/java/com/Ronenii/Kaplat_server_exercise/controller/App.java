@@ -77,7 +77,7 @@ public class App {
             todoLogger.info("Creating new TODO with Title [{}] {}", todo.getTitle(), logEndMSG());
             todoLogger.debug("Currently there are {} TODOs in the system. New TODO will be assigned with id {} {}", todoCount, todoCount + 1, logEndMSG());
             responseStatus = HttpStatus.OK;
-            result.setResult(todo.getId());
+            result.setResult(todo.getRawid());
             db.addTodo(todo);
         }
 
