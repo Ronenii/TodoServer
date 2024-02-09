@@ -3,9 +3,11 @@ package com.Ronenii.Kaplat_server_exercise.model.entities;
 import com.Ronenii.Kaplat_server_exercise.model.EState;
 import com.Ronenii.Kaplat_server_exercise.model.entities.api.TODO;
 import jakarta.persistence.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.io.Serializable;
 
+@Document(collection = "todos")
 public class TODOMongodb implements Serializable, TODO {
     @Id
     private String id;

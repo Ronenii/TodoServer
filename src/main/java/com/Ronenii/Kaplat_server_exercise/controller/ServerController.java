@@ -6,8 +6,8 @@ import com.Ronenii.Kaplat_server_exercise.model.Result;
 import com.Ronenii.Kaplat_server_exercise.model.EPersistenceMethod;
 import com.Ronenii.Kaplat_server_exercise.model.entities.TODOMongodb;
 import com.Ronenii.Kaplat_server_exercise.model.entities.TODOPostgres;
-import com.Ronenii.Kaplat_server_exercise.model.entities.api.TODO;
 import com.Ronenii.Kaplat_server_exercise.services.MongodbTodoService;
+import com.Ronenii.Kaplat_server_exercise.services.PostgresTodoService;
 import com.google.gson.Gson;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
@@ -29,6 +29,8 @@ public class ServerController {
     //private static DB db = new DB();
 
     private final MongodbTodoService mongodbTodoService;
+    private final PostgresTodoService postgresTodoService;
+
     public static final String REQUEST_LOGGER = "request-logger";
     public static final String TODO_LOGGER = "todo-logger";
     private static final Logger requestLogger = LoggerFactory.getLogger(REQUEST_LOGGER);
@@ -37,8 +39,9 @@ public class ServerController {
     private final static List VALID_LOGGERS = Arrays.asList(REQUEST_LOGGER, TODO_LOGGER);
 
 
-    public ServerController(MongodbTodoService mongodbTodoService) {
+    public ServerController(MongodbTodoService mongodbTodoService, PostgresTodoService postgresTodoService, PostgresTodoService postgresTodoService1) {
         this.mongodbTodoService = mongodbTodoService;
+        this.postgresTodoService = postgresTodoService1;
         gson = new Gson();
     }
 

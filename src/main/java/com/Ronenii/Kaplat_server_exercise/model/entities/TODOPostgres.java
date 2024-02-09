@@ -2,15 +2,27 @@ package com.Ronenii.Kaplat_server_exercise.model.entities;
 
 import com.Ronenii.Kaplat_server_exercise.model.EState;
 import com.Ronenii.Kaplat_server_exercise.model.entities.api.TODO;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 
 import java.io.Serializable;
 
+@Entity
+@Table(name = "todos")
 public class TODOPostgres implements Serializable, TODO {
+    @Id
+    @Column(name = "rawid", nullable = false)
     private Integer rawid;
+    @Column(name = "title", nullable = false)
     private final String title;
+    @Column(name = "content", nullable = false)
     private final String content;
+    @Column(name = "duedate", nullable = false)
     private final Long dueDate;
-    private final EState state;
+    @Column(name = "state", nullable = false)
+    private EState state;
 
     public TODOPostgres(String Title, String Content, long dueDate) {
         this.title = Title;
@@ -35,7 +47,27 @@ public class TODOPostgres implements Serializable, TODO {
         this.rawid = rawid;
     }
 
-//    public static void revokeId() {idCount--;}
+    @Override
+    public long getDueDate() {
+        return dueDate;
+    }
+
+    @Override
+    public String getTitle() {
+        return title;
+    }
+
+    @Override
+    public void setState(EState state) {
+        this.state = state;
+    }
+
+    @Override
+    public EState getState() {
+        return state;
+    }
+
+    //    public static void revokeId() {idCount--;}
 //
 //    public void giveId() {
 //        this.rawid = idCount++;
