@@ -28,8 +28,13 @@ public class ServerController {
     Gson gson;
     private static int requestCount = 0;
 
-    private final TodoService mongodbTodoService;
-    private final TodoService postgresTodoService;
+    private TodoService mongodbTodoService;
+    private TodoService postgresTodoService;
+
+    public ServerController(MongodbTodoService mongodbTodoService, PostgresTodoService postgresTodoService) {
+        this.mongodbTodoService = mongodbTodoService;
+        this.postgresTodoService = postgresTodoService;
+    }
 
     public static final String REQUEST_LOGGER = "request-logger";
     public static final String TODO_LOGGER = "todo-logger";
@@ -38,9 +43,7 @@ public class ServerController {
     private final static List VALID_LEVELS = Arrays.asList("DEBUG", "INFO", "ERROR");
     private final static List VALID_LOGGERS = Arrays.asList(REQUEST_LOGGER, TODO_LOGGER);
 
-    public ServerController(MongodbTodoService mongodbTodoService, PostgresTodoService postgresTodoService) {
-        this.mongodbTodoService = mongodbTodoService;
-        this.postgresTodoService = postgresTodoService;
+    public ServerController() {
         gson = new Gson();
     }
 

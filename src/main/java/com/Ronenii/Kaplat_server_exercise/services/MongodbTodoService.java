@@ -8,6 +8,7 @@ import com.Ronenii.Kaplat_server_exercise.repositories.MongodbTodoRepository;
 import com.Ronenii.Kaplat_server_exercise.repositories.PostgresTodoRepository;
 import com.Ronenii.Kaplat_server_exercise.services.api.AbstractTodoService;
 import com.Ronenii.Kaplat_server_exercise.services.api.TodoService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -15,6 +16,8 @@ import java.util.List;
 
 @Service
 public class MongodbTodoService extends AbstractTodoService implements TodoService {
+
+    @Autowired
     public MongodbTodoService(MongodbTodoRepository mongodbTodoRepository) {
         super(mongodbTodoRepository);
     }

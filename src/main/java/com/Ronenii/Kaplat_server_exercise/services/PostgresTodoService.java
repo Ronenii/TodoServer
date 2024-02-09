@@ -6,6 +6,7 @@ import com.Ronenii.Kaplat_server_exercise.model.entities.api.TODO;
 import com.Ronenii.Kaplat_server_exercise.repositories.PostgresTodoRepository;
 import com.Ronenii.Kaplat_server_exercise.services.api.AbstractTodoService;
 import com.Ronenii.Kaplat_server_exercise.services.api.TodoService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -13,6 +14,7 @@ import java.util.List;
 
 @Service
 public class PostgresTodoService extends AbstractTodoService implements TodoService {
+    @Autowired
     public PostgresTodoService(PostgresTodoRepository postgresTodoRepository) {
         super(postgresTodoRepository);
     }
