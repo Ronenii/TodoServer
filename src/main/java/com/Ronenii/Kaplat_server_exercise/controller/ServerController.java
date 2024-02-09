@@ -181,7 +181,6 @@ public class ServerController {
     // Tries to update the status of the object with the given id.
     // Prints out to console based on if the task succeeded or not.
     // Returns a response with the appropriate response status and boy.
-    // TODO: Add postgres implementation
     @PutMapping({"/todo"})
     public ResponseEntity<String> updateTodoStatusQuery(int id, String status, HttpServletRequest request) {
         long startTime = System.currentTimeMillis();
@@ -194,6 +193,7 @@ public class ServerController {
             oldStatus = mongodbTodoService.getById(id).getState().toString();
             EState newStatus = EState.valueOf(status);
             mongodbTodoService.updateTodo(id, newStatus);
+            // TODO: postgresTodoService.updateTodo(id, newStatus);
             result.setResult(oldStatus);
             responseStatus = HttpStatus.OK;
             todoLogger.debug("Todo id [{}] state change: {} --> {} {}", id, oldStatus, status, logEndMSG());
@@ -219,16 +219,18 @@ public class ServerController {
     public ResponseEntity<String> deleteTodoQuery(int id, HttpServletRequest request) {
         long startTime = System.currentTimeMillis();
         logRequestInfo(request);
-        Result<Integer> result = new Result<Integer>();
-        String responseJson, oldStatus;
-        HttpStatus responseStatus = null;
+        Result<Integer> result = new Result<>();
+        String responseJson;
+        HttpStatus responseStatus;
 
         try {
-            db.deleteTodo(id);
+            mongodbTodoService.deleteTodoById(id);
+            //TODO: postgresTodoService.deleteTodoById(id);
             todoLogger.info("Removing todo id {} {}", id, logEndMSG());
             responseStatus = HttpStatus.OK;
-            result.setResult(db.countTodoInstances("ALL"));
-            todoLogger.debug("After removing todo id [{}] there are {} TODOs in the system {}", id, db.getTodoCount(), logEndMSG());
+            long instancesCount = mongodbTodoService.count();
+            result.setResult((int) instancesCount);
+            todoLogger.debug("After removing todo id [{}] there are {} TODOs in the system {}", id, instancesCount, logEndMSG());
 
         } catch (NoSuchElementException e) {
             responseStatus = HttpStatus.NOT_FOUND;
