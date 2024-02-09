@@ -1,8 +1,7 @@
 package com.Ronenii.Kaplat_server_exercise.services.api;
 
-import com.Ronenii.Kaplat_server_exercise.model.ESortBy;
-import com.Ronenii.Kaplat_server_exercise.model.EState;
-import com.Ronenii.Kaplat_server_exercise.model.entities.TODOMongodb;
+import com.Ronenii.Kaplat_server_exercise.model.entities.api.ESortBy;
+import com.Ronenii.Kaplat_server_exercise.model.entities.api.EState;
 import com.Ronenii.Kaplat_server_exercise.model.entities.api.TODO;
 import com.Ronenii.Kaplat_server_exercise.repositories.api.TodoRepository;
 

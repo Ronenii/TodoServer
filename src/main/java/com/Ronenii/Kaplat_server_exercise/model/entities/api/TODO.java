@@ -1,7 +1,5 @@
 package com.Ronenii.Kaplat_server_exercise.model.entities.api;
 
-import com.Ronenii.Kaplat_server_exercise.model.EState;
-
 public interface TODO {
     String toString();
 

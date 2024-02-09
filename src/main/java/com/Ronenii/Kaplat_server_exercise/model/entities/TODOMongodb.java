@@ -1,6 +1,6 @@
 package com.Ronenii.Kaplat_server_exercise.model.entities;
 
-import com.Ronenii.Kaplat_server_exercise.model.EState;
+import com.Ronenii.Kaplat_server_exercise.model.entities.api.EState;
 import com.Ronenii.Kaplat_server_exercise.model.entities.api.TODO;
 import jakarta.persistence.Id;
 
@@ -12,7 +12,7 @@ public class TODOMongodb implements Serializable, TODO {
     private Integer rawid;
     private final String title;
     private final String content;
-    private Long dueDate;
+    private final Long dueDate;
     private EState state;
 
     public TODOMongodb(String Title, String Content, long dueDate) {

@@ -1,9 +1,9 @@
 package com.Ronenii.Kaplat_server_exercise.controller;
 
-import com.Ronenii.Kaplat_server_exercise.model.ESortBy;
-import com.Ronenii.Kaplat_server_exercise.model.EState;
+import com.Ronenii.Kaplat_server_exercise.model.entities.api.ESortBy;
+import com.Ronenii.Kaplat_server_exercise.model.entities.api.EState;
 import com.Ronenii.Kaplat_server_exercise.model.Result;
-import com.Ronenii.Kaplat_server_exercise.model.EPersistenceMethod;
+import com.Ronenii.Kaplat_server_exercise.model.entities.api.EPersistenceMethod;
 import com.Ronenii.Kaplat_server_exercise.model.entities.TODOMongodb;
 import com.Ronenii.Kaplat_server_exercise.model.entities.TODOPostgres;
 import com.Ronenii.Kaplat_server_exercise.model.entities.api.TODO;
