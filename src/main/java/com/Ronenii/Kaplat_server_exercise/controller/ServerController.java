@@ -1,8 +1,11 @@
 package com.Ronenii.Kaplat_server_exercise.controller;
 
+import com.Ronenii.Kaplat_server_exercise.model.ESortBy;
+import com.Ronenii.Kaplat_server_exercise.model.EState;
 import com.Ronenii.Kaplat_server_exercise.model.Result;
-import com.Ronenii.Kaplat_server_exercise.model.entities.TODO;
-import com.Ronenii.Kaplat_server_exercise.model.ePersistenceMethod;
+import com.Ronenii.Kaplat_server_exercise.model.EPersistenceMethod;
+import com.Ronenii.Kaplat_server_exercise.model.entities.TODOMongodb;
+import com.Ronenii.Kaplat_server_exercise.services.MongodbTodoService;
 import com.google.gson.Gson;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
@@ -16,13 +19,14 @@ import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.LoggerContext;
 
 @RestController
-public class App {
+public class ServerController {
 
     Gson gson;
-    private final int INVALID = -1;
     private static int requestCount = 0;
 
-    private static DB db = new DB();
+    //private static DB db = new DB();
+
+    private final MongodbTodoService mongodbTodoService;
     public static final String REQUEST_LOGGER = "request-logger";
     public static final String TODO_LOGGER = "todo-logger";
     private static final Logger requestLogger = LoggerFactory.getLogger(REQUEST_LOGGER);
@@ -31,7 +35,8 @@ public class App {
     private final static List VALID_LOGGERS = Arrays.asList(REQUEST_LOGGER, TODO_LOGGER);
 
 
-    public App() {
+    public ServerController(MongodbTodoService mongodbTodoService) {
+        this.mongodbTodoService = mongodbTodoService;
         gson = new Gson();
     }
 
@@ -42,9 +47,8 @@ public class App {
     public String healthQuery(HttpServletRequest request) {
         long startTime = System.currentTimeMillis();
         logRequestInfo(request);
-        long endTime = System.currentTimeMillis();
-        long responseTime = endTime - startTime;
-        logRequestDebug(responseTime);
+
+        logRequestDebug(startTime);
         return "OK";
     }
 
@@ -56,36 +60,32 @@ public class App {
             value = {"/todo"},
             consumes = {"application/json"}
     )
-    public ResponseEntity<String> createTodoQuery(@RequestBody TODO todo, HttpServletRequest request) {
+    public ResponseEntity<String> createTodoQuery(@RequestBody TODOMongodb todo, HttpServletRequest request) {
         long startTime = System.currentTimeMillis();
-        int todoCount = db.getTodoCount();
+        long todoCount = mongodbTodoService.count();
         logRequestInfo(request);
         Result<Integer> result = new Result<Integer>();
         String responseJson;
         HttpStatus responseStatus = null;
-        if (db.TodoExists(todo)) {
+        if (mongodbTodoService.existsTODOByTitle(todo)) {
             result.setErrorMessage("Error: TODO with the title " + todo.getTitle() + " already exists in the system");
             logTodoError(result.getErrorMessage());
             responseStatus = HttpStatus.CONFLICT;
-            TODO.revokeId();
         } else if (!db.TodoHasCorrectTime(todo)) {
             result.setErrorMessage("Error: Can’t create new TODO that its due date is in the past");
             logTodoError(result.getErrorMessage());
             responseStatus = HttpStatus.CONFLICT;
-            TODO.revokeId();
         } else {
             todoLogger.info("Creating new TODO with Title [{}] {}", todo.getTitle(), logEndMSG());
             todoLogger.debug("Currently there are {} TODOs in the system. New TODO will be assigned with id {} {}", todoCount, todoCount + 1, logEndMSG());
             responseStatus = HttpStatus.OK;
             result.setResult(todo.getRawid());
-            db.addTodo(todo);
+            mongodbTodoService.addTodo(todo);
         }
 
         // send the required response
         responseJson = gson.toJson(result);
-        long endTime = System.currentTimeMillis();
-        long responseTime = endTime - startTime;
-        logRequestDebug(responseTime);
+        logRequestDebug(startTime);
         return ResponseEntity.status(responseStatus).body(responseJson);
     }
 
@@ -102,7 +102,7 @@ public class App {
         HttpStatus responseStatus = null;
         int instances;
         try {
-            ePersistenceMethod persistenceMethodEnum = ePersistenceMethod.valueOf(persistenceMethod);
+            EPersistenceMethod persistenceMethodEnum = EPersistenceMethod.valueOf(persistenceMethod);
             instances = db.countTodoInstances(status);
             responseStatus = HttpStatus.OK;
             result.setResult(instances);
@@ -112,9 +112,8 @@ public class App {
         } finally {
             responseJson = gson.toJson(result);
         }
-        long endTime = System.currentTimeMillis();
-        long responseTime = endTime - startTime;
-        logRequestDebug(responseTime);
+
+        logRequestDebug(startTime);
         return ResponseEntity.status(responseStatus).body(responseJson);
     }
 
@@ -126,27 +125,32 @@ public class App {
     public ResponseEntity<String> getTodosDataQuery(String status, String sortBy, HttpServletRequest request) {
         long startTime = System.currentTimeMillis();
         logRequestInfo(request);
-        ArrayList<TODO> resultArray = new ArrayList<TODO>();
-        Result<String> result = new Result<String>();
+        List<TODOMongodb> resultArray;
+        Result<String> result = new Result<>();
         String responseJson;
-        HttpStatus responseStatus = null;
+        HttpStatus responseStatus;
+
         if (sortBy == null) {
             sortBy = "ID";
         }
+
         todoLogger.info("Extracting todos content. Filter: {} | Sorting by: {} {}", status, sortBy, logEndMSG());
         try {
-            db.sortTodos(resultArray, status, sortBy);
-            responseStatus = HttpStatus.OK;
+            EState eState = EState.valueOf(status);
+            ESortBy eSortBy = ESortBy.valueOf(sortBy);
+            resultArray = mongodbTodoService.getTodosByStateAndSortBy(eState, eSortBy);
             result.setResult(gson.toJson(resultArray));
-            todoLogger.debug("There are a total of {} todos in the system. The result holds {} todos {}", db.getTodoCount(), db.countTodoInstances(status), logEndMSG());
+
+            todoLogger.debug("There are a total of {} todos in the system. The result holds {} todos {}", mongodbTodoService.count(), resultArray.size(), logEndMSG());
+            responseStatus = HttpStatus.OK;
+
         } catch (IllegalArgumentException e) {
             responseStatus = HttpStatus.BAD_REQUEST;
         } finally {
             responseJson = gson.toJson(result);
         }
-        long endTime = System.currentTimeMillis();
-        long responseTime = endTime - startTime;
-        logRequestDebug(responseTime);
+
+        logRequestDebug(startTime);
         return ResponseEntity.status(responseStatus).body(responseJson);
     }
 
@@ -177,9 +181,8 @@ public class App {
         } finally {
             responseJson = gson.toJson(result);
         }
-        long endTime = System.currentTimeMillis();
-        long responseTime = endTime - startTime;
-        logRequestDebug(responseTime);
+
+        logRequestDebug(startTime);
         return ResponseEntity.status(responseStatus).body(responseJson);
     }
 
@@ -209,14 +212,14 @@ public class App {
         } finally {
             responseJson = gson.toJson(result);
         }
-        long endTime = System.currentTimeMillis();
-        long responseTime = endTime - startTime;
-        logRequestDebug(responseTime);
+
+        logRequestDebug(startTime);
         return ResponseEntity.status(responseStatus).body(responseJson);
     }
 
-    // TODO: need to make suer info gets printed out to requests.log and debug to console.
-    private void logRequestDebug(long responseTime) {
+    private void logRequestDebug(long startTime) {
+        long endTime = System.currentTimeMillis();
+        long responseTime = endTime - startTime;
         requestLogger.debug("request #{} duration: {}ms {}", requestCount, responseTime, logEndMSG());
     }
 
@@ -234,9 +237,8 @@ public class App {
         } catch (IllegalArgumentException e) {
             return "Failure: " + e.getMessage();
         }
-        long endTime = System.currentTimeMillis();
-        long responseTime = startTime - endTime;
-        logRequestDebug(responseTime);
+
+        logRequestDebug(startTime);
         return "Success: " + logLevel;
     }
 
@@ -251,9 +253,7 @@ public class App {
             return "Failure: " + e.getMessage();
         }
 
-        long endTime = System.currentTimeMillis();
-        long responseTime = startTime - endTime;
-        logRequestDebug(responseTime);
+        logRequestDebug(startTime);
         return "Success " + loggerLevel;
     }
 
