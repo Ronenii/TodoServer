@@ -3,72 +3,46 @@ package com.Ronenii.Kaplat_server_exercise.services;
 import com.Ronenii.Kaplat_server_exercise.model.ESortBy;
 import com.Ronenii.Kaplat_server_exercise.model.EState;
 import com.Ronenii.Kaplat_server_exercise.model.entities.TODOMongodb;
+import com.Ronenii.Kaplat_server_exercise.model.entities.TODOPostgres;
+import com.Ronenii.Kaplat_server_exercise.model.entities.api.TODO;
 import com.Ronenii.Kaplat_server_exercise.repositories.MongodbTodoRepository;
+import com.Ronenii.Kaplat_server_exercise.repositories.PostgresTodoRepository;
+import com.Ronenii.Kaplat_server_exercise.services.api.AbstractTodoService;
+import com.Ronenii.Kaplat_server_exercise.services.api.TodoService;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
 @Service
-public class MongodbTodoService {
-    private final MongodbTodoRepository mongodbTodoRepository;
-
+public class MongodbTodoService extends AbstractTodoService implements TodoService {
     public MongodbTodoService(MongodbTodoRepository mongodbTodoRepository) {
-        this.mongodbTodoRepository = mongodbTodoRepository;
+        super(mongodbTodoRepository);
     }
 
-    public List<TODOMongodb> list() {
-        return mongodbTodoRepository.findAll();
+    @Override
+    public List<TODO> list() {
+        List<TODOMongodb> todosMongodb = ((MongodbTodoRepository)todoRepository).findAll();
+
+        return new ArrayList<>(todosMongodb);
     }
 
-    public Long count() {
-        return mongodbTodoRepository.count();
-    }
-
-    public TODOMongodb addTodo(TODOMongodb todo) {
+    @Override
+    public TODO addTodo(TODO todo) {
         todo.setRawid(null);
-        return mongodbTodoRepository.save(todo);
+        return ((PostgresTodoRepository)todoRepository).save((TODOPostgres)todo);
     }
 
-    public boolean existsTODOByTitle(TODOMongodb todo){
-        return mongodbTodoRepository.existsTODOByTitle(todo.getTitle());
-    }
+    @Override
+    public TODO updateTodo(Integer id, EState state) {
+        TODO todoToUpdate = getById(id);
 
-    public TODOMongodb getById(Integer id) {
-        return mongodbTodoRepository.findTodoByRawid(id);
-    }
-
-    public List<TODOMongodb> getTodosByState(EState state) {
-        return mongodbTodoRepository.findTODOByState(state);
-    }
-
-    public List<TODOMongodb> getTodosByStateAndSortBy(EState state, ESortBy sortBy){
-        List<TODOMongodb> todoList = getTodosByState(state);
-        switch (sortBy) {
-            case ID:
-                todoList.sort(Comparator.comparing(TODOMongodb::getRawid));
-                break;
-            case DUE_DATE:
-                todoList.sort(Comparator.comparing(TODOMongodb::getDueDate));
-                break;
-            case TITLE:
-                todoList.sort(Comparator.comparing(TODOMongodb::getTitle));
-                break;
-        }
-
-        return todoList;
-    }
-
-    public void deleteTodoById(Integer id){mongodbTodoRepository.deleteByRawid(id);}
-
-    public TODOMongodb updateTodo(Integer id, EState state){
-        TODOMongodb todoToUpdate = getById(id);
-
-        if(todoToUpdate == null){
+        if (todoToUpdate == null) {
             return null;
         }
 
         todoToUpdate.setState(state);
-        return mongodbTodoRepository.save(todoToUpdate);
+        return ((MongodbTodoRepository)todoRepository).save((TODOMongodb) todoToUpdate);
     }
 }

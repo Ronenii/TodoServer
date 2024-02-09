@@ -22,6 +22,7 @@ public class TODOMongodb implements Serializable, TODO {
         this.state = EState.PENDING;
     }
 
+    @Override
     public String toString() {
         return "TODO(id=" + rawid +
                 ", Title=" + this.title +
@@ -30,45 +31,32 @@ public class TODOMongodb implements Serializable, TODO {
                 ", Status=" + this.state + ")";
     }
 
+    @Override
     public Integer getRawid() {
         return rawid;
     }
 
+    @Override
     public void setRawid(Integer rawid) {
         this.rawid = rawid;
     }
 
-    //    public static void revokeId() {idCount--;}
-//
-//    public void giveId() {
-//        this.rawid = idCount++;
-//    }
-//
+    @Override
     public String getTitle() {
         return title;
     }
 
-    //
-//    public void setTitle(String title) {
-//        this.title = title;
-//    }
-//
-//    public String getContent() {
-//        return content;
-//    }
-//
-//    public void setContent(String content) {
-//        this.content = content;
-//    }
-//
+    @Override
     public long getDueDate() {
         return dueDate;
     }
 
+    @Override
     public EState getState() {
         return state;
     }
 
+    @Override
     public void setState(EState state) {
         this.state = state;
     }

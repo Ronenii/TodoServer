@@ -2,15 +2,30 @@ package com.Ronenii.Kaplat_server_exercise.model.entities;
 
 import com.Ronenii.Kaplat_server_exercise.model.EState;
 import com.Ronenii.Kaplat_server_exercise.model.entities.api.TODO;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import jakarta.persistence.*;
 
 import java.io.Serializable;
 
+@Entity
+@Table(name="todos")
+@JsonIgnoreProperties({"hibernateLazyInitializer"})
 public class TODOPostgres implements Serializable, TODO {
+    @Id
+    @Column(name="rawid", nullable = false)
     private Integer rawid;
-    private final String title;
-    private final String content;
-    private final Long dueDate;
-    private final EState state;
+
+    @Column(name="title", nullable = false)
+    private String title;
+
+    @Column(name="content", nullable = false)
+    private String content;
+
+    @Column(name="duedate", nullable = false)
+    private Long dueDate;
+
+    @Column(name="state", nullable = false)
+    private EState state;
 
     public TODOPostgres(String Title, String Content, long dueDate) {
         this.title = Title;
@@ -19,6 +34,10 @@ public class TODOPostgres implements Serializable, TODO {
         this.state = EState.PENDING;
     }
 
+    public TODOPostgres() {
+    }
+
+    @Override
     public String toString() {
         return "TODO(id=" + rawid +
                 ", Title=" + this.title +
@@ -27,51 +46,33 @@ public class TODOPostgres implements Serializable, TODO {
                 ", Status=" + this.state + ")";
     }
 
+    @Override
     public Integer getRawid() {
         return rawid;
     }
 
+    @Override
     public void setRawid(Integer rawid) {
         this.rawid = rawid;
     }
 
-//    public static void revokeId() {idCount--;}
-//
-//    public void giveId() {
-//        this.rawid = idCount++;
-//    }
-//
-//    public String getTitle() {
-//        return title;
-//    }
-//
-//    public void setTitle(String title) {
-//        this.title = title;
-//    }
-//
-//    public String getContent() {
-//        return content;
-//    }
-//
-//    public void setContent(String content) {
-//        this.content = content;
-//    }
-//
-//    public Long getDuedate() {
-//        return duedate;
-//    }
-//
-//    public void setDuedate(Long duedate) {
-//        this.duedate = duedate;
-//    }
-//
-//    public eState getState() {
-//        return state;
-//    }
-//
-//    public void setState(eState state) {
-//        this.state = state;
-//    }
+    @Override
+    public long getDueDate() {
+        return dueDate;
+    }
 
+    @Override
+    public EState getState() {
+        return state;
+    }
 
+    @Override
+    public void setState(EState state) {
+        this.state = state;
+    }
+
+    @Override
+    public String getTitle() {
+        return title;
+    }
 }

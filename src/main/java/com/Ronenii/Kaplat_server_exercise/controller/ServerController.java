@@ -8,6 +8,7 @@ import com.Ronenii.Kaplat_server_exercise.model.entities.TODOMongodb;
 import com.Ronenii.Kaplat_server_exercise.model.entities.TODOPostgres;
 import com.Ronenii.Kaplat_server_exercise.model.entities.api.TODO;
 import com.Ronenii.Kaplat_server_exercise.services.MongodbTodoService;
+import com.Ronenii.Kaplat_server_exercise.services.PostgresTodoService;
 import com.google.gson.Gson;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
@@ -29,6 +30,8 @@ public class ServerController {
     //private static DB db = new DB();
 
     private final MongodbTodoService mongodbTodoService;
+    private final PostgresTodoService postgresTodoService;
+
     public static final String REQUEST_LOGGER = "request-logger";
     public static final String TODO_LOGGER = "todo-logger";
     private static final Logger requestLogger = LoggerFactory.getLogger(REQUEST_LOGGER);
@@ -37,8 +40,9 @@ public class ServerController {
     private final static List VALID_LOGGERS = Arrays.asList(REQUEST_LOGGER, TODO_LOGGER);
 
 
-    public ServerController(MongodbTodoService mongodbTodoService) {
+    public ServerController(MongodbTodoService mongodbTodoService, PostgresTodoService postgresTodoService) {
         this.mongodbTodoService = mongodbTodoService;
+        this.postgresTodoService = postgresTodoService;
         gson = new Gson();
     }
 
@@ -106,13 +110,13 @@ public class ServerController {
         Result<Integer> result = new Result<>();
         String responseJson;
         HttpStatus responseStatus;
-        int instances;
+        int instances = 0;
         try {
             EPersistenceMethod ePersistenceMethod = EPersistenceMethod.valueOf(persistenceMethod);
             EState eState = EState.valueOf(status);
             switch (ePersistenceMethod) {
                 case POSTGRES -> {
-                    //TODO: set instances size
+                    instances = postgresTodoService.getTodosByState(eState).size();
                 }
                 case Mongo -> {
                     instances = mongodbTodoService.getTodosByState(eState).size();
@@ -139,7 +143,7 @@ public class ServerController {
     public ResponseEntity<String> getTodosDataQuery(String status, String sortBy, String persistenceMethod, HttpServletRequest request) {
         long startTime = System.currentTimeMillis();
         logRequestInfo(request);
-        List<TODOMongodb> resultArray;
+        List<TODO> resultArray = null;
         Result<String> result = new Result<>();
         String responseJson;
         HttpStatus responseStatus;
@@ -156,7 +160,7 @@ public class ServerController {
 
             switch (ePersistenceMethod) {
                 case POSTGRES -> {
-                    //TODO: set result array
+                    resultArray = postgresTodoService.getTodosByStateAndSortBy(eState, eSortBy);
                 }
                 case Mongo -> {
                     resultArray = mongodbTodoService.getTodosByStateAndSortBy(eState, eSortBy);
@@ -193,7 +197,7 @@ public class ServerController {
             oldStatus = mongodbTodoService.getById(id).getState().toString();
             EState newStatus = EState.valueOf(status);
             mongodbTodoService.updateTodo(id, newStatus);
-            // TODO: postgresTodoService.updateTodo(id, newStatus);
+            postgresTodoService.updateTodo(id, newStatus);
             result.setResult(oldStatus);
             responseStatus = HttpStatus.OK;
             todoLogger.debug("Todo id [{}] state change: {} --> {} {}", id, oldStatus, status, logEndMSG());
