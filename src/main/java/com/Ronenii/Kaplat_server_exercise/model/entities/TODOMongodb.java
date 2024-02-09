@@ -38,7 +38,7 @@ public class TODOMongodb implements Serializable, TODO {
         this.rawid = rawid;
     }
 
-//    public static void revokeId() {idCount--;}
+    //    public static void revokeId() {idCount--;}
 //
 //    public void giveId() {
 //        this.rawid = idCount++;
@@ -47,7 +47,8 @@ public class TODOMongodb implements Serializable, TODO {
     public String getTitle() {
         return title;
     }
-//
+
+    //
 //    public void setTitle(String title) {
 //        this.title = title;
 //    }
@@ -60,14 +61,14 @@ public class TODOMongodb implements Serializable, TODO {
 //        this.content = content;
 //    }
 //
-    public Long getDueDate() {
+    public long getDueDate() {
         return dueDate;
     }
-//
-//    public eState getState() {
-//        return state;
-//    }
-//
+
+    public EState getState() {
+        return state;
+    }
+
     public void setState(EState state) {
         this.state = state;
     }

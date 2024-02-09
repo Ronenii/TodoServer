@@ -4,4 +4,5 @@ public interface TODO {
     String toString();
     Integer getRawid();
     void setRawid(Integer rawid);
+    long getDueDate();
 }
