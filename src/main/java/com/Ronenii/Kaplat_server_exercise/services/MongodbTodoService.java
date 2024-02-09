@@ -29,7 +29,7 @@ public class MongodbTodoService extends AbstractTodoService implements TodoServi
     @Override
     public TODO addTodo(TODO todo) {
         todo.setRawid(null);
-        return ((PostgresTodoRepository) todoRepository).save((TODOPostgres) todo);
+        return ((MongodbTodoRepository) todoRepository).save((TODOMongodb) todo);
     }
 
     @Override

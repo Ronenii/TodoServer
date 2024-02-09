@@ -38,7 +38,6 @@ public class ServerController {
     private final static List VALID_LEVELS = Arrays.asList("DEBUG", "INFO", "ERROR");
     private final static List VALID_LOGGERS = Arrays.asList(REQUEST_LOGGER, TODO_LOGGER);
 
-
     public ServerController(MongodbTodoService mongodbTodoService, PostgresTodoService postgresTodoService) {
         this.mongodbTodoService = mongodbTodoService;
         this.postgresTodoService = postgresTodoService;
