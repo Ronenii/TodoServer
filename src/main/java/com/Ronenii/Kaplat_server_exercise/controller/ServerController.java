@@ -9,6 +9,7 @@ import com.Ronenii.Kaplat_server_exercise.model.entities.TODOPostgres;
 import com.Ronenii.Kaplat_server_exercise.model.entities.api.TODO;
 import com.Ronenii.Kaplat_server_exercise.services.MongodbTodoService;
 import com.Ronenii.Kaplat_server_exercise.services.PostgresTodoService;
+import com.Ronenii.Kaplat_server_exercise.services.api.TodoService;
 import com.google.gson.Gson;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
@@ -27,10 +28,8 @@ public class ServerController {
     Gson gson;
     private static int requestCount = 0;
 
-    //private static DB db = new DB();
-
-    private final MongodbTodoService mongodbTodoService;
-    private final PostgresTodoService postgresTodoService;
+    private final TodoService mongodbTodoService;
+    private final TodoService postgresTodoService;
 
     public static final String REQUEST_LOGGER = "request-logger";
     public static final String TODO_LOGGER = "todo-logger";
@@ -67,14 +66,15 @@ public class ServerController {
             consumes = {"application/json"}
     )
     public ResponseEntity<String> createTodoQuery(String title, String content, long dueDate, HttpServletRequest request) {
-        TODOMongodb newMongoTODO = new TODOMongodb(title, content, dueDate);
-        TODOPostgres newPostgresTODO = new TODOPostgres(title, content, dueDate);
+        TODO newMongoTODO = new TODOMongodb(title, content, dueDate);
+        TODO newPostgresTODO = new TODOPostgres(title, content, dueDate);
         long startTime = System.currentTimeMillis();
         long todoCount = mongodbTodoService.count();
-        logRequestInfo(request);
         Result<Integer> result = new Result<>();
         String responseJson;
         HttpStatus responseStatus;
+
+        logRequestInfo(request);
 
         if (todoExists(newMongoTODO, newPostgresTODO)) {
             result.setErrorMessage("Error: TODO with the title " + newMongoTODO.getTitle() + " already exists in the system");
@@ -90,7 +90,7 @@ public class ServerController {
             responseStatus = HttpStatus.OK;
             result.setResult(newMongoTODO.getRawid());
             mongodbTodoService.addTodo(newMongoTODO);
-            // TODO: postgresTodoService.addTodo(newPostgresTodo);
+            postgresTodoService.addTodo(newPostgresTODO);
         }
 
         // send the required response
@@ -229,7 +229,7 @@ public class ServerController {
 
         try {
             mongodbTodoService.deleteTodoById(id);
-            //TODO: postgresTodoService.deleteTodoById(id);
+            postgresTodoService.deleteTodoById(id);
             todoLogger.info("Removing todo id {} {}", id, logEndMSG());
             responseStatus = HttpStatus.OK;
             long instancesCount = mongodbTodoService.count();
@@ -321,9 +321,8 @@ public class ServerController {
         return java.lang.System.currentTimeMillis() <= dueDate;
     }
 
-    private boolean todoExists(TODOMongodb todoMongodb, TODOPostgres todoPostgres){
-        // TODO: Add postgres todo
-        return mongodbTodoService.existsTODOByTitle(todoMongodb);
+    private boolean todoExists(TODO todoMongodb, TODO todoPostgres){
+        return mongodbTodoService.existsTODOByTitle(todoMongodb) && postgresTodoService.existsTODOByTitle(todoPostgres);
     }
 }
 

@@ -9,7 +9,7 @@ import com.Ronenii.Kaplat_server_exercise.repositories.api.TodoRepository;
 import java.util.Comparator;
 import java.util.List;
 
-public abstract class AbstractTodoService implements TodoService{
+public abstract class AbstractTodoService implements TodoService {
     protected final TodoRepository todoRepository;
 
     protected AbstractTodoService(TodoRepository todoRepository) {
@@ -20,7 +20,7 @@ public abstract class AbstractTodoService implements TodoService{
         return todoRepository.count();
     }
 
-    public boolean existsTODOByTitle(TODOMongodb todo) {
+    public boolean existsTODOByTitle(TODO todo) {
         return todoRepository.existsTODOByTitle(todo.getTitle());
     }
 

@@ -23,7 +23,7 @@ public class MongodbTodoService extends AbstractTodoService implements TodoServi
 
     @Override
     public List<TODO> list() {
-        List<TODOMongodb> todosMongodb = ((MongodbTodoRepository)todoRepository).findAll();
+        List<TODOMongodb> todosMongodb = ((MongodbTodoRepository) todoRepository).findAll();
 
         return new ArrayList<>(todosMongodb);
     }
@@ -31,7 +31,7 @@ public class MongodbTodoService extends AbstractTodoService implements TodoServi
     @Override
     public TODO addTodo(TODO todo) {
         todo.setRawid(null);
-        return ((PostgresTodoRepository)todoRepository).save((TODOPostgres)todo);
+        return ((PostgresTodoRepository) todoRepository).save((TODOPostgres) todo);
     }
 
     @Override
@@ -43,6 +43,6 @@ public class MongodbTodoService extends AbstractTodoService implements TodoServi
         }
 
         todoToUpdate.setState(state);
-        return ((MongodbTodoRepository)todoRepository).save((TODOMongodb) todoToUpdate);
+        return ((MongodbTodoRepository) todoRepository).save((TODOMongodb) todoToUpdate);
     }
 }

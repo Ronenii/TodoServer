@@ -31,7 +31,7 @@ public class PostgresTodoService extends AbstractTodoService implements TodoServ
     @Override
     public TODO addTodo(TODO todo) {
         todo.setRawid(null);
-        return ((PostgresTodoRepository)todoRepository).save((TODOPostgres)todo);
+        return ((PostgresTodoRepository) todoRepository).save((TODOPostgres) todo);
     }
 
     @Override

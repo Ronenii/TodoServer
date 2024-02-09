@@ -60,6 +60,4 @@ public class TODOMongodb implements Serializable, TODO {
     public void setState(EState state) {
         this.state = state;
     }
-
-
 }
