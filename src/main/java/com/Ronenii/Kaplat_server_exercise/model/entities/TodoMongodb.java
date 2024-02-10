@@ -1,8 +1,7 @@
 package com.Ronenii.Kaplat_server_exercise.model.entities;
 
-import com.Ronenii.Kaplat_server_exercise.model.EState;
+import com.Ronenii.Kaplat_server_exercise.model.entities.api.EState;
 import com.Ronenii.Kaplat_server_exercise.model.entities.api.Todo;
-import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 

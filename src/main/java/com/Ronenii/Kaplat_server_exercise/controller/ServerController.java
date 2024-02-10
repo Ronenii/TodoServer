@@ -1,14 +1,15 @@
 package com.Ronenii.Kaplat_server_exercise.controller;
 
-import com.Ronenii.Kaplat_server_exercise.model.ESortBy;
-import com.Ronenii.Kaplat_server_exercise.model.EState;
+import com.Ronenii.Kaplat_server_exercise.model.entities.api.ESortBy;
+import com.Ronenii.Kaplat_server_exercise.model.entities.api.EState;
 import com.Ronenii.Kaplat_server_exercise.model.Result;
-import com.Ronenii.Kaplat_server_exercise.model.EPersistenceMethod;
+import com.Ronenii.Kaplat_server_exercise.model.entities.api.EPersistenceMethod;
 import com.Ronenii.Kaplat_server_exercise.model.entities.TodoMongodb;
 import com.Ronenii.Kaplat_server_exercise.model.entities.TodoPostgres;
 import com.Ronenii.Kaplat_server_exercise.model.entities.api.Todo;
 import com.Ronenii.Kaplat_server_exercise.services.MongodbTodoService;
 import com.Ronenii.Kaplat_server_exercise.services.PostgresTodoService;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.google.gson.Gson;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
@@ -64,7 +65,11 @@ public class ServerController {
             value = {"/todo"},
             consumes = {"application/json"}
     )
-    public ResponseEntity<String> createTodoQuery(String title, String content, long dueDate, HttpServletRequest request) {
+    public ResponseEntity<String> createTodoQuery(@RequestBody JsonNode json, HttpServletRequest request) {
+        String title = json.get("title").asText();
+        String content = json.get("content").asText();
+        long dueDate = json.get("dueDate").asLong();
+
         TodoMongodb newMongoTodo = new TodoMongodb(title, content, dueDate);
         TodoPostgres newPostgresTodo = new TodoPostgres(title, content, dueDate);
         long startTime = System.currentTimeMillis();

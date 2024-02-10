@@ -1,7 +1,7 @@
 package com.Ronenii.Kaplat_server_exercise.services;
 
-import com.Ronenii.Kaplat_server_exercise.model.ESortBy;
-import com.Ronenii.Kaplat_server_exercise.model.EState;
+import com.Ronenii.Kaplat_server_exercise.model.entities.api.ESortBy;
+import com.Ronenii.Kaplat_server_exercise.model.entities.api.EState;
 import com.Ronenii.Kaplat_server_exercise.model.entities.TodoPostgres;
 import com.Ronenii.Kaplat_server_exercise.repositories.PostgresTodoRepository;
 import org.springframework.stereotype.Service;
