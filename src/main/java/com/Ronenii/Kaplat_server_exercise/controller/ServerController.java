@@ -27,8 +27,6 @@ public class ServerController {
     Gson gson;
     private static int requestCount = 0;
 
-    //private static DB db = new DB();
-
     private final MongodbTodoService mongodbTodoService;
     private final PostgresTodoService postgresTodoService;
 
@@ -127,7 +125,10 @@ public class ServerController {
             todoLogger.info("Total TODOs count for state {} is {} {}", status, instances, logEndMSG());
         } catch (IllegalArgumentException e) {
             responseStatus = HttpStatus.BAD_REQUEST;
-        } finally {
+        } catch(Exception e){
+            responseStatus = HttpStatus.INTERNAL_SERVER_ERROR;
+            e.printStackTrace();
+        }finally {
             responseJson = gson.toJson(result);
         }
 
@@ -173,7 +174,10 @@ public class ServerController {
 
         } catch (IllegalArgumentException e) {
             responseStatus = HttpStatus.BAD_REQUEST;
-        } finally {
+        } catch(Exception e){
+            responseStatus = HttpStatus.INTERNAL_SERVER_ERROR;
+            e.printStackTrace();
+        }finally {
             responseJson = gson.toJson(result);
         }
 
@@ -207,7 +211,10 @@ public class ServerController {
             responseStatus = HttpStatus.NOT_FOUND;
             result.setErrorMessage("Error: no such TODO with id " + id);
             logTodoError(result.getErrorMessage());
-        } finally {
+        } catch(Exception e){
+            responseStatus = HttpStatus.INTERNAL_SERVER_ERROR;
+            e.printStackTrace();
+        }finally {
             responseJson = gson.toJson(result);
         }
 
@@ -240,6 +247,9 @@ public class ServerController {
             responseStatus = HttpStatus.NOT_FOUND;
             result.setErrorMessage("Error: no such TODO with id " + id);
             logTodoError(result.getErrorMessage());
+        }catch(Exception e){
+            responseStatus = HttpStatus.INTERNAL_SERVER_ERROR;
+            e.printStackTrace();
         } finally {
             responseJson = gson.toJson(result);
         }

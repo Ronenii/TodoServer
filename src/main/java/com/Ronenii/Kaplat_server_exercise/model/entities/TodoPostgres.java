@@ -2,25 +2,24 @@ package com.Ronenii.Kaplat_server_exercise.model.entities;
 
 import com.Ronenii.Kaplat_server_exercise.model.EState;
 import com.Ronenii.Kaplat_server_exercise.model.entities.api.Todo;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import jakarta.persistence.*;
 
 import java.io.Serializable;
 
 @Entity
 @Table(name = "todos")
+@JsonIgnoreProperties({"hibernateLazyInitializer"})
 public class TodoPostgres implements Serializable, Todo {
     @Id
     @Column(name = "rawid", nullable = false)
     private Integer rawid;
     @Column(name = "title", nullable = false)
-    private final String title;
+    private String title;
     @Column(name = "content", nullable = false)
-    private final String content;
+    private String content;
     @Column(name = "duedate", nullable = false)
-    private final Long dueDate;
+    private Long dueDate;
     @Column(name = "state", nullable = false)
     private EState state;
 
@@ -29,6 +28,9 @@ public class TodoPostgres implements Serializable, Todo {
         this.content = Content;
         this.dueDate = dueDate;
         this.state = EState.PENDING;
+    }
+
+    public TodoPostgres() {
     }
 
     public String toString() {
