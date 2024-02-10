@@ -116,7 +116,7 @@ public class ServerController {
                 case POSTGRES -> {
                     instances = postgresTodoService.getTodosByState(eState).size();
                 }
-                case Mongo -> {
+                case MONGO -> {
                     instances = mongodbTodoService.getTodosByState(eState).size();
                 }
             }
@@ -163,7 +163,7 @@ public class ServerController {
                 case POSTGRES -> {
                     resultList = new ArrayList<>(postgresTodoService.getTodosByStateAndSortBy(eState, eSortBy));
                 }
-                case Mongo -> {
+                case MONGO -> {
                     resultList = new ArrayList<>(mongodbTodoService.getTodosByStateAndSortBy(eState, eSortBy));
                 }
             }

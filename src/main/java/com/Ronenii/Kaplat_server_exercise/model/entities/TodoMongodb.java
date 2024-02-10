@@ -18,9 +18,9 @@ public class TodoMongodb implements Serializable, Todo {
     private Long duedate;
     private String state;
 
-    public TodoMongodb(String Title, String Content, long duedate) {
-        this.title = Title;
-        this.content = Content;
+    public TodoMongodb(String title, String content, long duedate) {
+        this.title = title;
+        this.content = content;
         this.duedate = duedate;
         this.state = EState.PENDING.name();
     }
