@@ -11,6 +11,7 @@
 	<groupId>com.Ronenii</groupId>
 	<artifactId>Kaplat_server_excercise</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
+	<packaging>jar</packaging>
 	<name>Kaplat_server_exercise</name>
 	<description>Ex3 of kaplat</description>
 	<properties>

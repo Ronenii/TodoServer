@@ -14,7 +14,7 @@ public class TodoMongodb implements Serializable, Todo {
     private Integer rawid;
     private final String title;
     private final String content;
-    private Long duedate;
+    private final Long duedate;
     private String state;
 
     public TodoMongodb(String title, String content, long duedate) {

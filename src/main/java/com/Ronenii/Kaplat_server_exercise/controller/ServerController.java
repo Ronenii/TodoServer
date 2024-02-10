@@ -299,12 +299,11 @@ public class ServerController {
 
     private String buildResponseString(List<Todo> mongoTodos, List<Todo> postgresTodos) throws JsonProcessingException {
         ObjectMapper objectMapper = new ObjectMapper();
-        StringBuilder responseStr = new StringBuilder();
-        responseStr.append("MONGO\n");
-        responseStr.append(objectMapper.writeValueAsString(mongoTodos));
-        responseStr.append("\nPOSTGRES\n");
-        responseStr.append(objectMapper.writeValueAsString(postgresTodos));
-        return responseStr.toString();
+        String responseStr = "MONGO\n" +
+                objectMapper.writeValueAsString(mongoTodos) +
+                "\nPOSTGRES\n" +
+                objectMapper.writeValueAsString(postgresTodos);
+        return responseStr;
     }
 
     private void logRequestDebug(long startTime) {
