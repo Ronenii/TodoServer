@@ -1,11 +1,9 @@
 package com.Ronenii.Kaplat_server_exercise.services;
 
 import com.Ronenii.Kaplat_server_exercise.model.entities.api.EState;
-import com.Ronenii.Kaplat_server_exercise.model.entities.TODOMongodb;
-import com.Ronenii.Kaplat_server_exercise.model.entities.TODOPostgres;
-import com.Ronenii.Kaplat_server_exercise.model.entities.api.TODO;
+import com.Ronenii.Kaplat_server_exercise.model.entities.TodoMongodb;
+import com.Ronenii.Kaplat_server_exercise.model.entities.api.Todo;
 import com.Ronenii.Kaplat_server_exercise.repositories.MongodbTodoRepository;
-import com.Ronenii.Kaplat_server_exercise.repositories.PostgresTodoRepository;
 import com.Ronenii.Kaplat_server_exercise.services.api.AbstractTodoService;
 import com.Ronenii.Kaplat_server_exercise.services.api.TodoService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,27 +21,27 @@ public class MongodbTodoService extends AbstractTodoService implements TodoServi
     }
 
     @Override
-    public List<TODO> list() {
-        List<TODOMongodb> todosMongodb = ((MongodbTodoRepository) todoRepository).findAll();
+    public List<Todo> list() {
+        List<TodoMongodb> todosMongodb = ((MongodbTodoRepository)todoRepository).findAll();
 
         return new ArrayList<>(todosMongodb);
     }
 
     @Override
-    public TODO addTodo(TODO todo) {
+    public Todo addTodo(Todo todo) {
         todo.setRawid(null);
-        return ((MongodbTodoRepository) todoRepository).save((TODOMongodb) todo);
+        return ((MongodbTodoRepository) todoRepository).save((TodoMongodb) todo);
     }
 
     @Override
-    public TODO updateTodo(Integer id, EState state) {
-        TODO todoToUpdate = getById(id);
+    public Todo updateTodo(Integer id, EState state) {
+        Todo todoToUpdate = getById(id);
 
         if (todoToUpdate == null) {
             return null;
         }
 
         todoToUpdate.setState(state);
-        return ((MongodbTodoRepository) todoRepository).save((TODOMongodb) todoToUpdate);
+        return ((MongodbTodoRepository) todoRepository).save((TodoMongodb) todoToUpdate);
     }
 }

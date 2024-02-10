@@ -1,8 +1,8 @@
 package com.Ronenii.Kaplat_server_exercise.repositories;
 
 import com.Ronenii.Kaplat_server_exercise.model.entities.api.EState;
-import com.Ronenii.Kaplat_server_exercise.model.entities.TODOMongodb;
-import com.Ronenii.Kaplat_server_exercise.model.entities.api.TODO;
+import com.Ronenii.Kaplat_server_exercise.model.entities.TodoMongodb;
+import com.Ronenii.Kaplat_server_exercise.model.entities.api.Todo;
 import com.Ronenii.Kaplat_server_exercise.repositories.api.TodoRepository;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
@@ -10,15 +10,15 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface MongodbTodoRepository extends MongoRepository<TODOMongodb, String>, TodoRepository {
+public interface MongodbTodoRepository extends MongoRepository<TodoMongodb, String>, TodoRepository {
     @Override
-    TODO findTodoByRawid(int rawid);
+    Todo findTodoByRawid(int rawid);
 
     @Override
     boolean existsTODOByTitle(String title);
 
     @Override
-    List<TODO> findTODOByState(EState state);
+    List<Todo> findTodoByState(EState state);
 
     @Override
     void deleteByRawid(int rawid);

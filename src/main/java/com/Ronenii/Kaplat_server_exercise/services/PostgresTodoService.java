@@ -1,8 +1,8 @@
 package com.Ronenii.Kaplat_server_exercise.services;
 
 import com.Ronenii.Kaplat_server_exercise.model.entities.api.EState;
-import com.Ronenii.Kaplat_server_exercise.model.entities.TODOPostgres;
-import com.Ronenii.Kaplat_server_exercise.model.entities.api.TODO;
+import com.Ronenii.Kaplat_server_exercise.model.entities.TodoPostgres;
+import com.Ronenii.Kaplat_server_exercise.model.entities.api.Todo;
 import com.Ronenii.Kaplat_server_exercise.repositories.PostgresTodoRepository;
 import com.Ronenii.Kaplat_server_exercise.services.api.AbstractTodoService;
 import com.Ronenii.Kaplat_server_exercise.services.api.TodoService;
@@ -20,27 +20,27 @@ public class PostgresTodoService extends AbstractTodoService implements TodoServ
     }
 
     @Override
-    public List<TODO> list() {
-        List<TODOPostgres> todosPostgres = ((PostgresTodoRepository)todoRepository).findAll();
+    public List<Todo> list() {
+        List<TodoPostgres> todosPostgres = ((PostgresTodoRepository)todoRepository).findAll();
 
         return new ArrayList<>(todosPostgres);
     }
 
     @Override
-    public TODO addTodo(TODO todo) {
+    public Todo addTodo(Todo todo) {
         todo.setRawid(null);
-        return ((PostgresTodoRepository) todoRepository).save((TODOPostgres) todo);
+        return ((PostgresTodoRepository) todoRepository).save((TodoPostgres) todo);
     }
 
     @Override
-    public TODO updateTodo(Integer id, EState state) {
-        TODO todoToUpdate = getById(id);
+    public Todo updateTodo(Integer id, EState state) {
+        Todo todoToUpdate = getById(id);
 
         if (todoToUpdate == null) {
             return null;
         }
 
         todoToUpdate.setState(state);
-        return ((PostgresTodoRepository)todoRepository).save((TODOPostgres) todoToUpdate);
+        return ((PostgresTodoRepository)todoRepository).save((TodoPostgres) todoToUpdate);
     }
 }

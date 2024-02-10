@@ -2,24 +2,26 @@ package com.Ronenii.Kaplat_server_exercise.services.api;
 
 import com.Ronenii.Kaplat_server_exercise.model.entities.api.ESortBy;
 import com.Ronenii.Kaplat_server_exercise.model.entities.api.EState;
-import com.Ronenii.Kaplat_server_exercise.model.entities.api.TODO;
+import com.Ronenii.Kaplat_server_exercise.model.entities.api.Todo;
 
 import java.util.List;
 
 public interface TodoService {
-    List<TODO> list();
+    List<Todo> list();
 
-    TODO addTodo(TODO todo);
+    Todo addTodo(Todo todo);
 
-    TODO updateTodo(Integer id, EState state);
+    Todo updateTodo(Integer id, EState state);
 
     Long count();
 
-    public boolean existsTODOByTitle(TODO todo);
+    boolean existsTODOByTitle(Todo todo);
 
-    public TODO getById(Integer id);
+    Todo getById(Integer id);
 
-    public List<TODO> getTodosByState(EState state);
-    public List<TODO> getTodosByStateAndSortBy(EState state, ESortBy sortBy);
-    public void deleteTodoById(Integer id);
+    List<Todo> getTodosByState(EState state);
+
+    List<Todo> getTodosByStateAndSortBy(EState state, ESortBy sortBy);
+
+    void deleteTodoById(Integer id);
 }

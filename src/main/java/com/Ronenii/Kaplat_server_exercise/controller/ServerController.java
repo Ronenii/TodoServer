@@ -4,12 +4,11 @@ import com.Ronenii.Kaplat_server_exercise.model.entities.api.ESortBy;
 import com.Ronenii.Kaplat_server_exercise.model.entities.api.EState;
 import com.Ronenii.Kaplat_server_exercise.model.Result;
 import com.Ronenii.Kaplat_server_exercise.model.entities.api.EPersistenceMethod;
-import com.Ronenii.Kaplat_server_exercise.model.entities.TODOMongodb;
-import com.Ronenii.Kaplat_server_exercise.model.entities.TODOPostgres;
-import com.Ronenii.Kaplat_server_exercise.model.entities.api.TODO;
+import com.Ronenii.Kaplat_server_exercise.model.entities.TodoMongodb;
+import com.Ronenii.Kaplat_server_exercise.model.entities.TodoPostgres;
+import com.Ronenii.Kaplat_server_exercise.model.entities.api.Todo;
 import com.Ronenii.Kaplat_server_exercise.services.MongodbTodoService;
 import com.Ronenii.Kaplat_server_exercise.services.PostgresTodoService;
-import com.Ronenii.Kaplat_server_exercise.services.api.TodoService;
 import com.google.gson.Gson;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
@@ -64,8 +63,8 @@ public class ServerController {
             consumes = {"application/json"}
     )
     public ResponseEntity<String> createTodoQuery(String title, String content, long dueDate, HttpServletRequest request) {
-        TODO newMongoTODO = new TODOMongodb(title, content, dueDate);
-        TODO newPostgresTODO = new TODOPostgres(title, content, dueDate);
+        Todo newMongoTODO = new TodoMongodb(title, content, dueDate);
+        Todo newPostgresTODO = new TodoPostgres(title, content, dueDate);
         long startTime = System.currentTimeMillis();
         long todoCount = mongodbTodoService.count();
         Result<Integer> result = new Result<>();
@@ -116,7 +115,7 @@ public class ServerController {
                 case POSTGRES -> {
                     instances = postgresTodoService.getTodosByState(eState).size();
                 }
-                case Mongo -> {
+                case MONGO -> {
                     instances = mongodbTodoService.getTodosByState(eState).size();
                 }
             }
@@ -125,7 +124,11 @@ public class ServerController {
             todoLogger.info("Total TODOs count for state {} is {} {}", status, instances, logEndMSG());
         } catch (IllegalArgumentException e) {
             responseStatus = HttpStatus.BAD_REQUEST;
-        } finally {
+        }catch (Exception e){
+            responseStatus = HttpStatus.INTERNAL_SERVER_ERROR;
+            e.printStackTrace();
+        }
+        finally {
             responseJson = gson.toJson(result);
         }
 
@@ -141,7 +144,7 @@ public class ServerController {
     public ResponseEntity<String> getTodosDataQuery(String status, String sortBy, String persistenceMethod, HttpServletRequest request) {
         long startTime = System.currentTimeMillis();
         logRequestInfo(request);
-        List<TODO> resultArray = null;
+        List<Todo> resultArray = null;
         Result<String> result = new Result<>();
         String responseJson;
         HttpStatus responseStatus;
@@ -160,7 +163,7 @@ public class ServerController {
                 case POSTGRES -> {
                     resultArray = postgresTodoService.getTodosByStateAndSortBy(eState, eSortBy);
                 }
-                case Mongo -> {
+                case MONGO -> {
                     resultArray = mongodbTodoService.getTodosByStateAndSortBy(eState, eSortBy);
                 }
             }
@@ -319,7 +322,7 @@ public class ServerController {
         return java.lang.System.currentTimeMillis() <= dueDate;
     }
 
-    private boolean todoExists(TODO todoMongodb, TODO todoPostgres){
+    private boolean todoExists(Todo todoMongodb, Todo todoPostgres){
         return mongodbTodoService.existsTODOByTitle(todoMongodb) && postgresTodoService.existsTODOByTitle(todoPostgres);
     }
 }

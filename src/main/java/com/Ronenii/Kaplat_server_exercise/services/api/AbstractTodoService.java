@@ -2,7 +2,7 @@ package com.Ronenii.Kaplat_server_exercise.services.api;
 
 import com.Ronenii.Kaplat_server_exercise.model.entities.api.ESortBy;
 import com.Ronenii.Kaplat_server_exercise.model.entities.api.EState;
-import com.Ronenii.Kaplat_server_exercise.model.entities.api.TODO;
+import com.Ronenii.Kaplat_server_exercise.model.entities.api.Todo;
 import com.Ronenii.Kaplat_server_exercise.repositories.api.TodoRepository;
 
 import java.util.ArrayList;
@@ -22,27 +22,42 @@ public abstract class AbstractTodoService implements TodoService {
     }
 
     @Override
-    public boolean existsTODOByTitle(TODO todo) {
+    public boolean existsTODOByTitle(Todo todo) {
         return todoRepository.existsTODOByTitle(todo.getTitle());
     }
 
     @Override
-    public TODO getById(Integer id) {
+    public Todo getById(Integer id) {
         return todoRepository.findTodoByRawid(id);
     }
 
     @Override
-    public List<TODO> getTodosByState(EState state) {
-        return todoRepository.findTODOByState(state);
+    public List<Todo> getTodosByState(EState state) {
+        List<Todo> ret = null;
+
+        if(state == EState.ALL){
+            ret =  list();
+        }
+        else{
+            ret = todoRepository.findTODOByState(state);
+        }
+
+        return ret;
     }
 
     @Override
-    public List<TODO> getTodosByStateAndSortBy(EState state, ESortBy sortBy) {
-        List<TODO> todoList = new ArrayList<>(getTodosByState(state));
+    public List<Todo> getTodosByStateAndSortBy(EState state, ESortBy sortBy) {
+        List<Todo> todoList = null;
+        if(state == EState.ALL){
+            todoList = new ArrayList<>(list());
+        }
+        else{
+            todoList = new ArrayList<>(getTodosByState(state));
+        }
         switch (sortBy) {
-            case ID -> todoList.sort(Comparator.comparing(TODO::getRawid));
-            case DUE_DATE -> todoList.sort(Comparator.comparing(TODO::getDueDate));
-            case TITLE -> todoList.sort(Comparator.comparing(TODO::getTitle));
+            case ID -> todoList.sort(Comparator.comparing(Todo::getRawid));
+            case DUE_DATE -> todoList.sort(Comparator.comparing(Todo::getDueDate));
+            case TITLE -> todoList.sort(Comparator.comparing(Todo::getTitle));
         }
 
         return todoList;

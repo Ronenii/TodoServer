@@ -1,12 +1,12 @@
 package com.Ronenii.Kaplat_server_exercise.model.entities;
 
 import com.Ronenii.Kaplat_server_exercise.model.entities.api.EState;
-import com.Ronenii.Kaplat_server_exercise.model.entities.api.TODO;
+import com.Ronenii.Kaplat_server_exercise.model.entities.api.Todo;
 import jakarta.persistence.Id;
 
 import java.io.Serializable;
 
-public class TODOMongodb implements Serializable, TODO {
+public class TodoMongodb implements Serializable, Todo {
     @Id
     private String id;
     private Integer rawid;
@@ -15,7 +15,7 @@ public class TODOMongodb implements Serializable, TODO {
     private final Long dueDate;
     private EState state;
 
-    public TODOMongodb(String Title, String Content, long dueDate) {
+    public TodoMongodb(String Title, String Content, long dueDate) {
         this.title = Title;
         this.content = Content;
         this.dueDate = dueDate;

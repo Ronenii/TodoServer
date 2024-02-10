@@ -1,6 +1,6 @@
 package com.Ronenii.Kaplat_server_exercise.model.entities.api;
 
-public interface TODO {
+public interface Todo {
     String toString();
 
     Integer getRawid();

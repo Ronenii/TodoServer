@@ -1,4 +1,1 @@
-10-02-2024 13:21:24.015 INFO: Incoming request | #1 | resource: /todo/size | HTTP Verb GET | request #1
-10-02-2024 13:22:03.719 INFO: Incoming request | #2 | resource: /todo/size | HTTP Verb GET | request #2
-10-02-2024 13:22:46.647 INFO: Incoming request | #3 | resource: /todo/size | HTTP Verb GET | request #3
-10-02-2024 13:23:07.972 INFO: Incoming request | #4 | resource: /todo/size | HTTP Verb GET | request #4
+10-02-2024 13:56:02.201 INFO: Incoming request | #1 | resource: /todo/size | HTTP Verb GET | request #1
