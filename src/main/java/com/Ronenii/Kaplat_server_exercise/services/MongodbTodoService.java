@@ -2,7 +2,7 @@ package com.Ronenii.Kaplat_server_exercise.services;
 
 import com.Ronenii.Kaplat_server_exercise.model.ESortBy;
 import com.Ronenii.Kaplat_server_exercise.model.EState;
-import com.Ronenii.Kaplat_server_exercise.model.entities.TODOMongodb;
+import com.Ronenii.Kaplat_server_exercise.model.entities.TodoMongodb;
 import com.Ronenii.Kaplat_server_exercise.repositories.MongodbTodoRepository;
 import org.springframework.stereotype.Service;
 
@@ -17,7 +17,7 @@ public class MongodbTodoService {
         this.mongodbTodoRepository = mongodbTodoRepository;
     }
 
-    public List<TODOMongodb> list() {
+    public List<TodoMongodb> list() {
         return mongodbTodoRepository.findAll();
     }
 
@@ -25,34 +25,34 @@ public class MongodbTodoService {
         return mongodbTodoRepository.count();
     }
 
-    public TODOMongodb addTodo(TODOMongodb todo) {
+    public TodoMongodb addTodo(TodoMongodb todo) {
         todo.setRawid(null);
         return mongodbTodoRepository.save(todo);
     }
 
-    public boolean existsTODOByTitle(TODOMongodb todo){
+    public boolean existsTODOByTitle(TodoMongodb todo){
         return mongodbTodoRepository.existsTODOByTitle(todo.getTitle());
     }
 
-    public TODOMongodb getById(Integer id) {
+    public TodoMongodb getById(Integer id) {
         return mongodbTodoRepository.findTodoByRawid(id);
     }
 
-    public List<TODOMongodb> getTodosByState(EState state) {
+    public List<TodoMongodb> getTodosByState(EState state) {
         return mongodbTodoRepository.findTODOByState(state);
     }
 
-    public List<TODOMongodb> getTodosByStateAndSortBy(EState state, ESortBy sortBy){
-        List<TODOMongodb> todoList = getTodosByState(state);
+    public List<TodoMongodb> getTodosByStateAndSortBy(EState state, ESortBy sortBy){
+        List<TodoMongodb> todoList = getTodosByState(state);
         switch (sortBy) {
             case ID:
-                todoList.sort(Comparator.comparing(TODOMongodb::getRawid));
+                todoList.sort(Comparator.comparing(TodoMongodb::getRawid));
                 break;
             case DUE_DATE:
-                todoList.sort(Comparator.comparing(TODOMongodb::getDueDate));
+                todoList.sort(Comparator.comparing(TodoMongodb::getDueDate));
                 break;
             case TITLE:
-                todoList.sort(Comparator.comparing(TODOMongodb::getTitle));
+                todoList.sort(Comparator.comparing(TodoMongodb::getTitle));
                 break;
         }
 
@@ -61,8 +61,8 @@ public class MongodbTodoService {
 
     public void deleteTodoById(Integer id){mongodbTodoRepository.deleteByRawid(id);}
 
-    public TODOMongodb updateTodo(Integer id, EState state){
-        TODOMongodb todoToUpdate = getById(id);
+    public TodoMongodb updateTodo(Integer id, EState state){
+        TodoMongodb todoToUpdate = getById(id);
 
         if(todoToUpdate == null){
             return null;

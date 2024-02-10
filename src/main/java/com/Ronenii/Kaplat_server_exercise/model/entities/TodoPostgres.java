@@ -1,7 +1,7 @@
 package com.Ronenii.Kaplat_server_exercise.model.entities;
 
 import com.Ronenii.Kaplat_server_exercise.model.EState;
-import com.Ronenii.Kaplat_server_exercise.model.entities.api.TODO;
+import com.Ronenii.Kaplat_server_exercise.model.entities.api.Todo;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -11,7 +11,7 @@ import java.io.Serializable;
 
 @Entity
 @Table(name = "todos")
-public class TODOPostgres implements Serializable, TODO {
+public class TodoPostgres implements Serializable, Todo {
     @Id
     @Column(name = "rawid", nullable = false)
     private Integer rawid;
@@ -24,7 +24,7 @@ public class TODOPostgres implements Serializable, TODO {
     @Column(name = "state", nullable = false)
     private EState state;
 
-    public TODOPostgres(String Title, String Content, long dueDate) {
+    public TodoPostgres(String Title, String Content, long dueDate) {
         this.title = Title;
         this.content = Content;
         this.dueDate = dueDate;

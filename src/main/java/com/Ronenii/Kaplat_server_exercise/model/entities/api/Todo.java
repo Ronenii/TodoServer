@@ -2,7 +2,7 @@ package com.Ronenii.Kaplat_server_exercise.model.entities.api;
 
 import com.Ronenii.Kaplat_server_exercise.model.EState;
 
-public interface TODO {
+public interface Todo {
     String toString();
     Integer getRawid();
     void setRawid(Integer rawid);

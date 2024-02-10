@@ -4,8 +4,9 @@ import com.Ronenii.Kaplat_server_exercise.model.ESortBy;
 import com.Ronenii.Kaplat_server_exercise.model.EState;
 import com.Ronenii.Kaplat_server_exercise.model.Result;
 import com.Ronenii.Kaplat_server_exercise.model.EPersistenceMethod;
-import com.Ronenii.Kaplat_server_exercise.model.entities.TODOMongodb;
-import com.Ronenii.Kaplat_server_exercise.model.entities.TODOPostgres;
+import com.Ronenii.Kaplat_server_exercise.model.entities.TodoMongodb;
+import com.Ronenii.Kaplat_server_exercise.model.entities.TodoPostgres;
+import com.Ronenii.Kaplat_server_exercise.model.entities.api.Todo;
 import com.Ronenii.Kaplat_server_exercise.services.MongodbTodoService;
 import com.Ronenii.Kaplat_server_exercise.services.PostgresTodoService;
 import com.google.gson.Gson;
@@ -66,8 +67,8 @@ public class ServerController {
             consumes = {"application/json"}
     )
     public ResponseEntity<String> createTodoQuery(String title, String content, long dueDate, HttpServletRequest request) {
-        TODOMongodb newMongoTODO = new TODOMongodb(title, content, dueDate);
-        TODOPostgres newPostgresTODO = new TODOPostgres(title, content, dueDate);
+        TodoMongodb newMongoTodo = new TodoMongodb(title, content, dueDate);
+        TodoPostgres newPostgresTodo = new TodoPostgres(title, content, dueDate);
         long startTime = System.currentTimeMillis();
         long todoCount = mongodbTodoService.count();
         logRequestInfo(request);
@@ -75,8 +76,8 @@ public class ServerController {
         String responseJson;
         HttpStatus responseStatus;
 
-        if (todoExists(newMongoTODO, newPostgresTODO)) {
-            result.setErrorMessage("Error: TODO with the title " + newMongoTODO.getTitle() + " already exists in the system");
+        if (todoExists(newMongoTodo, newPostgresTodo)) {
+            result.setErrorMessage("Error: TODO with the title " + newMongoTodo.getTitle() + " already exists in the system");
             logTodoError(result.getErrorMessage());
             responseStatus = HttpStatus.CONFLICT;
         } else if (!todoTimeValid(dueDate)) {
@@ -84,12 +85,12 @@ public class ServerController {
             logTodoError(result.getErrorMessage());
             responseStatus = HttpStatus.CONFLICT;
         } else {
-            todoLogger.info("Creating new TODO with Title [{}] {}", newMongoTODO.getTitle(), logEndMSG());
+            todoLogger.info("Creating new TODO with Title [{}] {}", newMongoTodo.getTitle(), logEndMSG());
             todoLogger.debug("Currently there are {} TODOs in the system. New TODO will be assigned with id {} {}", todoCount, todoCount + 1, logEndMSG());
             responseStatus = HttpStatus.OK;
-            result.setResult(newMongoTODO.getRawid());
-            mongodbTodoService.addTodo(newMongoTODO);
-            // TODO: postgresTodoService.addTodo(newPostgresTodo);
+            result.setResult(newMongoTodo.getRawid());
+            mongodbTodoService.addTodo(newMongoTodo);
+            postgresTodoService.addTodo(newPostgresTodo);
         }
 
         // send the required response
@@ -109,7 +110,7 @@ public class ServerController {
         Result<Integer> result = new Result<>();
         String responseJson;
         HttpStatus responseStatus;
-        int instances;
+        int instances = 0;
         try {
             EPersistenceMethod ePersistenceMethod = EPersistenceMethod.valueOf(persistenceMethod);
             EState eState = EState.valueOf(status);
@@ -142,7 +143,7 @@ public class ServerController {
     public ResponseEntity<String> getTodosDataQuery(String status, String sortBy, String persistenceMethod, HttpServletRequest request) {
         long startTime = System.currentTimeMillis();
         logRequestInfo(request);
-        List<TODOMongodb> resultArray;
+        List<Todo> resultList = null;
         Result<String> result = new Result<>();
         String responseJson;
         HttpStatus responseStatus;
@@ -159,15 +160,15 @@ public class ServerController {
 
             switch (ePersistenceMethod) {
                 case POSTGRES -> {
-                    //TODO: set result array
+                    resultList = new ArrayList<>(postgresTodoService.getTodosByStateAndSortBy(eState, eSortBy));
                 }
                 case Mongo -> {
-                    resultArray = mongodbTodoService.getTodosByStateAndSortBy(eState, eSortBy);
+                    resultList = new ArrayList<>(mongodbTodoService.getTodosByStateAndSortBy(eState, eSortBy));
                 }
             }
-            result.setResult(gson.toJson(resultArray));
+            result.setResult(gson.toJson(resultList));
 
-            todoLogger.debug("There are a total of {} todos in the system. The result holds {} todos {}", mongodbTodoService.count(), resultArray.size(), logEndMSG());
+            todoLogger.debug("There are a total of {} todos in the system. The result holds {} todos {}", mongodbTodoService.count(), resultList.size(), logEndMSG());
             responseStatus = HttpStatus.OK;
 
         } catch (IllegalArgumentException e) {
@@ -196,7 +197,7 @@ public class ServerController {
             oldStatus = mongodbTodoService.getById(id).getState().toString();
             EState newStatus = EState.valueOf(status);
             mongodbTodoService.updateTodo(id, newStatus);
-            // TODO: postgresTodoService.updateTodo(id, newStatus);
+            postgresTodoService.updateTodo(id, newStatus);
             result.setResult(oldStatus);
             responseStatus = HttpStatus.OK;
             todoLogger.debug("Todo id [{}] state change: {} --> {} {}", id, oldStatus, status, logEndMSG());
@@ -228,7 +229,7 @@ public class ServerController {
 
         try {
             mongodbTodoService.deleteTodoById(id);
-            //TODO: postgresTodoService.deleteTodoById(id);
+            postgresTodoService.deleteTodoById(id);
             todoLogger.info("Removing todo id {} {}", id, logEndMSG());
             responseStatus = HttpStatus.OK;
             long instancesCount = mongodbTodoService.count();
@@ -320,9 +321,8 @@ public class ServerController {
         return java.lang.System.currentTimeMillis() <= dueDate;
     }
 
-    private boolean todoExists(TODOMongodb todoMongodb, TODOPostgres todoPostgres){
-        // TODO: Add postgres todo
-        return mongodbTodoService.existsTODOByTitle(todoMongodb);
+    private boolean todoExists(TodoMongodb todoMongodb, TodoPostgres todoPostgres){
+        return mongodbTodoService.existsTODOByTitle(todoMongodb) || postgresTodoService.existsTODOByTitle(todoPostgres);
     }
 }
 
