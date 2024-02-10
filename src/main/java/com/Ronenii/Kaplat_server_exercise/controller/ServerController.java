@@ -115,7 +115,7 @@ public class ServerController {
             EState eState = EState.valueOf(status);
             switch (ePersistenceMethod) {
                 case POSTGRES -> {
-                    //TODO: set instances size
+                    instances = postgresTodoService.getTodosByState(eState).size();
                 }
                 case Mongo -> {
                     instances = mongodbTodoService.getTodosByState(eState).size();
