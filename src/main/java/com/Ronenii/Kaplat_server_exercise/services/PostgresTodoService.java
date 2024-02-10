@@ -30,30 +30,31 @@ public class PostgresTodoService {
         return postgresTodoRepository.save(todo);
     }
 
-    public boolean existsTODOByTitle(TodoPostgres todo){
-        return postgresTodoRepository.existsTODOByTitle(todo.getTitle());
+    public boolean existsTodoByTitle(TodoPostgres todo){
+        return postgresTodoRepository.existsTodoPostgresByTitle(todo.getTitle());
     }
 
     public TodoPostgres getById(Integer id) {
-        return postgresTodoRepository.findTodoByRawid(id);
+        return postgresTodoRepository.findTodoPostgresByRawid(id);
     }
 
     public List<TodoPostgres> getTodosByState(EState state) {
-        return postgresTodoRepository.findTODOByState(state);
+        List<TodoPostgres> ret = null;
+        if(state == EState.ALL){
+            ret = list();
+        }
+        else{
+            ret = postgresTodoRepository.findTodoPostgresByState(state);
+        }
+        return ret;
     }
 
     public List<TodoPostgres> getTodosByStateAndSortBy(EState state, ESortBy sortBy){
         List<TodoPostgres> todoList = getTodosByState(state);
         switch (sortBy) {
-            case ID:
-                todoList.sort(Comparator.comparing(TodoPostgres::getRawid));
-                break;
-            case DUE_DATE:
-                todoList.sort(Comparator.comparing(TodoPostgres::getDueDate));
-                break;
-            case TITLE:
-                todoList.sort(Comparator.comparing(TodoPostgres::getTitle));
-                break;
+            case ID -> todoList.sort(Comparator.comparing(TodoPostgres::getRawid));
+            case DUE_DATE -> todoList.sort(Comparator.comparing(TodoPostgres::getDueDate));
+            case TITLE -> todoList.sort(Comparator.comparing(TodoPostgres::getTitle));
         }
 
         return todoList;

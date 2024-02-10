@@ -322,7 +322,7 @@ public class ServerController {
     }
 
     private boolean todoExists(TodoMongodb todoMongodb, TodoPostgres todoPostgres){
-        return mongodbTodoService.existsTODOByTitle(todoMongodb) || postgresTodoService.existsTODOByTitle(todoPostgres);
+        return mongodbTodoService.existsTodoByTitle(todoMongodb) || postgresTodoService.existsTodoByTitle(todoPostgres);
     }
 }
 

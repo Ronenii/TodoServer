@@ -30,36 +30,37 @@ public class MongodbTodoService {
         return mongodbTodoRepository.save(todo);
     }
 
-    public boolean existsTODOByTitle(TodoMongodb todo){
-        return mongodbTodoRepository.existsTODOByTitle(todo.getTitle());
+    public boolean existsTodoByTitle(TodoMongodb todo){
+        return mongodbTodoRepository.existsTodoMongodbByTitle(todo.getTitle());
     }
 
     public TodoMongodb getById(Integer id) {
-        return mongodbTodoRepository.findTodoByRawid(id);
+        return mongodbTodoRepository.findTodoMongodbByRawid(id);
     }
 
     public List<TodoMongodb> getTodosByState(EState state) {
-        return mongodbTodoRepository.findTODOByState(state);
+        List<TodoMongodb> ret = null;
+        if(state == EState.ALL){
+            ret = list();
+        }
+        else{
+            ret = mongodbTodoRepository.findTodoMongodbByState(state);
+        }
+        return ret;
     }
 
     public List<TodoMongodb> getTodosByStateAndSortBy(EState state, ESortBy sortBy){
         List<TodoMongodb> todoList = getTodosByState(state);
         switch (sortBy) {
-            case ID:
-                todoList.sort(Comparator.comparing(TodoMongodb::getRawid));
-                break;
-            case DUE_DATE:
-                todoList.sort(Comparator.comparing(TodoMongodb::getDueDate));
-                break;
-            case TITLE:
-                todoList.sort(Comparator.comparing(TodoMongodb::getTitle));
-                break;
+            case ID -> todoList.sort(Comparator.comparing(TodoMongodb::getRawid));
+            case DUE_DATE -> todoList.sort(Comparator.comparing(TodoMongodb::getDueDate));
+            case TITLE -> todoList.sort(Comparator.comparing(TodoMongodb::getTitle));
         }
 
         return todoList;
     }
 
-    public void deleteTodoById(Integer id){mongodbTodoRepository.deleteByRawid(id);}
+    public void deleteTodoById(Integer id){mongodbTodoRepository.deleteTodoMongodbByRawid(id);}
 
     public TodoMongodb updateTodo(Integer id, EState state){
         TodoMongodb todoToUpdate = getById(id);
