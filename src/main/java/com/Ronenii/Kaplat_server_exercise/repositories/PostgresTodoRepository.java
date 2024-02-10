@@ -11,7 +11,7 @@ import java.util.List;
 public interface PostgresTodoRepository extends JpaRepository<TodoPostgres, Integer> {
     TodoPostgres findTodoPostgresByRawid(int rawid);
     boolean existsTodoPostgresByTitle(String title);
-    List<TodoPostgres> findTodoPostgresByState(EState state);
+    List<TodoPostgres> findTodoPostgresByState(String state);
     void deleteByRawid(int rawid);
     long count();
 }

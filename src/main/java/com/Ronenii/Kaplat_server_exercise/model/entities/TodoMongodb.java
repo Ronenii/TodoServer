@@ -2,6 +2,7 @@ package com.Ronenii.Kaplat_server_exercise.model.entities;
 
 import com.Ronenii.Kaplat_server_exercise.model.EState;
 import com.Ronenii.Kaplat_server_exercise.model.entities.api.Todo;
+import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -14,21 +15,21 @@ public class TodoMongodb implements Serializable, Todo {
     private Integer rawid;
     private final String title;
     private final String content;
-    private Long dueDate;
-    private EState state;
+    private Long duedate;
+    private String state;
 
-    public TodoMongodb(String Title, String Content, long dueDate) {
+    public TodoMongodb(String Title, String Content, long duedate) {
         this.title = Title;
         this.content = Content;
-        this.dueDate = dueDate;
-        this.state = EState.PENDING;
+        this.duedate = duedate;
+        this.state = EState.PENDING.name();
     }
 
     public String toString() {
         return "TODO(id=" + rawid +
                 ", Title=" + this.title +
                 ", Content=" + this.content +
-                ", DueDate=" + this.dueDate +
+                ", DueDate=" + this.duedate +
                 ", Status=" + this.state + ")";
     }
 
@@ -40,39 +41,20 @@ public class TodoMongodb implements Serializable, Todo {
         this.rawid = rawid;
     }
 
-    //    public static void revokeId() {idCount--;}
-//
-//    public void giveId() {
-//        this.rawid = idCount++;
-//    }
-//
     public String getTitle() {
         return title;
     }
 
-    //
-//    public void setTitle(String title) {
-//        this.title = title;
-//    }
-//
-//    public String getContent() {
-//        return content;
-//    }
-//
-//    public void setContent(String content) {
-//        this.content = content;
-//    }
-//
     public long getDueDate() {
-        return dueDate;
+        return duedate;
     }
 
     public EState getState() {
-        return state;
+        return EState.valueOf(state);
     }
 
     public void setState(EState state) {
-        this.state = state;
+        this.state = state.name();
     }
 
 

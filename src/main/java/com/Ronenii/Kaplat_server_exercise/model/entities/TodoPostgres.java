@@ -21,13 +21,13 @@ public class TodoPostgres implements Serializable, Todo {
     @Column(name = "duedate", nullable = false)
     private Long dueDate;
     @Column(name = "state", nullable = false)
-    private EState state;
+    private String state;
 
     public TodoPostgres(String Title, String Content, long dueDate) {
         this.title = Title;
         this.content = Content;
         this.dueDate = dueDate;
-        this.state = EState.PENDING;
+        this.state = EState.PENDING.name();
     }
 
     public TodoPostgres() {
@@ -61,51 +61,11 @@ public class TodoPostgres implements Serializable, Todo {
 
     @Override
     public void setState(EState state) {
-        this.state = state;
+        this.state = state.name();
     }
 
     @Override
     public EState getState() {
-        return state;
+        return EState.valueOf(state);
     }
-
-    //    public static void revokeId() {idCount--;}
-//
-//    public void giveId() {
-//        this.rawid = idCount++;
-//    }
-//
-//    public String getTitle() {
-//        return title;
-//    }
-//
-//    public void setTitle(String title) {
-//        this.title = title;
-//    }
-//
-//    public String getContent() {
-//        return content;
-//    }
-//
-//    public void setContent(String content) {
-//        this.content = content;
-//    }
-//
-//    public Long getDuedate() {
-//        return duedate;
-//    }
-//
-//    public void setDuedate(Long duedate) {
-//        this.duedate = duedate;
-//    }
-//
-//    public eState getState() {
-//        return state;
-//    }
-//
-//    public void setState(eState state) {
-//        this.state = state;
-//    }
-
-
 }

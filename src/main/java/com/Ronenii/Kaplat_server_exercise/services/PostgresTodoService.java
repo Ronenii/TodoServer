@@ -44,7 +44,7 @@ public class PostgresTodoService {
             ret = list();
         }
         else{
-            ret = postgresTodoRepository.findTodoPostgresByState(state);
+            ret = postgresTodoRepository.findTodoPostgresByState(state.name());
         }
         return ret;
     }
