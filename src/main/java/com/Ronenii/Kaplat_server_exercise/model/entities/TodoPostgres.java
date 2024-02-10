@@ -13,7 +13,7 @@ import java.io.Serializable;
 public class TodoPostgres implements Serializable, Todo {
     @Id
     @Column(name = "rawid", nullable = false)
-    private Integer rawid;
+    private Integer id;
     @Column(name = "title", nullable = false)
     private String title;
     @Column(name = "content", nullable = false)
@@ -34,19 +34,19 @@ public class TodoPostgres implements Serializable, Todo {
     }
 
     public String toString() {
-        return "TODO(id=" + rawid +
+        return "TODO(id=" + id +
                 ", Title=" + this.title +
                 ", Content=" + this.content +
                 ", DueDate=" + this.dueDate +
                 ", Status=" + this.state + ")";
     }
 
-    public Integer getRawid() {
-        return rawid;
+    public Integer getId() {
+        return id;
     }
 
-    public void setRawid(Integer rawid) {
-        this.rawid = rawid;
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     @Override
@@ -67,5 +67,10 @@ public class TodoPostgres implements Serializable, Todo {
     @Override
     public EState getState() {
         return EState.valueOf(state);
+    }
+
+    @Override
+    public String getContent() {
+        return content;
     }
 }

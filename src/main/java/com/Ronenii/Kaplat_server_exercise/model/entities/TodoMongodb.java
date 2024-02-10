@@ -25,19 +25,19 @@ public class TodoMongodb implements Serializable, Todo {
     }
 
     public String toString() {
-        return "TODO(id=" + rawid +
+        return "TODO(id=" + id +
                 ", Title=" + this.title +
                 ", Content=" + this.content +
                 ", DueDate=" + this.duedate +
                 ", Status=" + this.state + ")";
     }
 
-    public Integer getRawid() {
+    public Integer getId() {
         return rawid;
     }
 
-    public void setRawid(Integer rawid) {
-        this.rawid = rawid;
+    public void setId(Integer id) {
+        this.rawid = id;
     }
 
     public String getTitle() {
@@ -56,5 +56,8 @@ public class TodoMongodb implements Serializable, Todo {
         this.state = state.name();
     }
 
-
+    @Override
+    public String getContent() {
+        return content;
+    }
 }

@@ -26,11 +26,11 @@ public class MongodbTodoService {
     }
 
     public TodoMongodb addTodo(TodoMongodb todo) {
-        todo.setRawid(null);
+        todo.setId((int)mongodbTodoRepository.count() + 1);
         return mongodbTodoRepository.save(todo);
     }
 
-    public boolean existsTodoByTitle(TodoMongodb todo){
+    public boolean existsTodoByTitle(TodoMongodb todo) {
         return mongodbTodoRepository.existsTodoMongodbByTitle(todo.getTitle());
     }
 
@@ -40,19 +40,18 @@ public class MongodbTodoService {
 
     public List<TodoMongodb> getTodosByState(EState state) {
         List<TodoMongodb> ret = null;
-        if(state == EState.ALL){
+        if (state == EState.ALL) {
             ret = list();
-        }
-        else{
-            ret = mongodbTodoRepository.findTodoMongodbByState(state);
+        } else {
+            ret = mongodbTodoRepository.findTodoMongodbByState(state.name());
         }
         return ret;
     }
 
-    public List<TodoMongodb> getTodosByStateAndSortBy(EState state, ESortBy sortBy){
+    public List<TodoMongodb> getTodosByStateAndSortBy(EState state, ESortBy sortBy) {
         List<TodoMongodb> todoList = getTodosByState(state);
         switch (sortBy) {
-            case ID -> todoList.sort(Comparator.comparing(TodoMongodb::getRawid));
+            case ID -> todoList.sort(Comparator.comparing(TodoMongodb::getId));
             case DUE_DATE -> todoList.sort(Comparator.comparing(TodoMongodb::getDueDate));
             case TITLE -> todoList.sort(Comparator.comparing(TodoMongodb::getTitle));
         }
@@ -60,12 +59,14 @@ public class MongodbTodoService {
         return todoList;
     }
 
-    public void deleteTodoById(Integer id){mongodbTodoRepository.deleteTodoMongodbByRawid(id);}
+    public void deleteTodoById(Integer id) {
+        mongodbTodoRepository.deleteTodoMongodbByRawid(id);
+    }
 
-    public TodoMongodb updateTodo(Integer id, EState state){
+    public TodoMongodb updateTodo(Integer id, EState state) {
         TodoMongodb todoToUpdate = getById(id);
 
-        if(todoToUpdate == null){
+        if (todoToUpdate == null) {
             return null;
         }
 

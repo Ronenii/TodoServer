@@ -9,8 +9,12 @@ import com.Ronenii.Kaplat_server_exercise.model.entities.TodoPostgres;
 import com.Ronenii.Kaplat_server_exercise.model.entities.api.Todo;
 import com.Ronenii.Kaplat_server_exercise.services.MongodbTodoService;
 import com.Ronenii.Kaplat_server_exercise.services.PostgresTodoService;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -79,21 +83,27 @@ public class ServerController {
         String responseJson;
         HttpStatus responseStatus;
 
-        if (todoExists(newMongoTodo, newPostgresTodo)) {
-            result.setErrorMessage("Error: TODO with the title " + newMongoTodo.getTitle() + " already exists in the system");
-            logTodoError(result.getErrorMessage());
-            responseStatus = HttpStatus.CONFLICT;
-        } else if (!todoTimeValid(dueDate)) {
-            result.setErrorMessage("Error: Can’t create new TODO that its due date is in the past");
-            logTodoError(result.getErrorMessage());
-            responseStatus = HttpStatus.CONFLICT;
-        } else {
-            todoLogger.info("Creating new TODO with Title [{}] {}", newMongoTodo.getTitle(), logEndMSG());
-            todoLogger.debug("Currently there are {} TODOs in the system. New TODO will be assigned with id {} {}", todoCount, todoCount + 1, logEndMSG());
-            responseStatus = HttpStatus.OK;
-            result.setResult(newMongoTodo.getRawid());
-            mongodbTodoService.addTodo(newMongoTodo);
-            postgresTodoService.addTodo(newPostgresTodo);
+        try {
+            if (todoExists(newMongoTodo, newPostgresTodo)) {
+                result.setErrorMessage("Error: TODO with the title " + newMongoTodo.getTitle() + " already exists in the system");
+                logTodoError(result.getErrorMessage());
+                responseStatus = HttpStatus.CONFLICT;
+            } else if (!todoTimeValid(dueDate)) {
+                result.setErrorMessage("Error: Can’t create new TODO that its due date is in the past");
+                logTodoError(result.getErrorMessage());
+                responseStatus = HttpStatus.CONFLICT;
+            } else {
+                todoLogger.info("Creating new TODO with Title [{}] {}", newMongoTodo.getTitle(), logEndMSG());
+                todoLogger.debug("Currently there are {} TODOs in the system. New TODO will be assigned with id {} {}", todoCount, todoCount + 1, logEndMSG());
+                responseStatus = HttpStatus.OK;
+
+                newMongoTodo = mongodbTodoService.addTodo(newMongoTodo);
+                postgresTodoService.addTodo(newPostgresTodo);
+                result.setResult(newMongoTodo.getId());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            responseStatus = HttpStatus.INTERNAL_SERVER_ERROR;
         }
 
         // send the required response
@@ -118,22 +128,18 @@ public class ServerController {
             EPersistenceMethod ePersistenceMethod = EPersistenceMethod.valueOf(persistenceMethod);
             EState eState = EState.valueOf(status);
             switch (ePersistenceMethod) {
-                case POSTGRES -> {
-                    instances = postgresTodoService.getTodosByState(eState).size();
-                }
-                case MONGO -> {
-                    instances = mongodbTodoService.getTodosByState(eState).size();
-                }
+                case POSTGRES -> instances = postgresTodoService.getTodosByState(eState).size();
+                case MONGO -> instances = mongodbTodoService.getTodosByState(eState).size();
             }
             responseStatus = HttpStatus.OK;
             result.setResult(instances);
             todoLogger.info("Total TODOs count for state {} is {} {}", status, instances, logEndMSG());
         } catch (IllegalArgumentException e) {
             responseStatus = HttpStatus.BAD_REQUEST;
-        } catch(Exception e){
+        } catch (Exception e) {
             responseStatus = HttpStatus.INTERNAL_SERVER_ERROR;
             e.printStackTrace();
-        }finally {
+        } finally {
             responseJson = gson.toJson(result);
         }
 
@@ -149,8 +155,8 @@ public class ServerController {
     public ResponseEntity<String> getTodosDataQuery(String status, String sortBy, String persistenceMethod, HttpServletRequest request) {
         long startTime = System.currentTimeMillis();
         logRequestInfo(request);
+        Result<List<Map<String,Object>>> result = new Result<>();
         List<Todo> resultList = null;
-        Result<String> result = new Result<>();
         String responseJson;
         HttpStatus responseStatus;
 
@@ -172,18 +178,23 @@ public class ServerController {
                     resultList = new ArrayList<>(mongodbTodoService.getTodosByStateAndSortBy(eState, eSortBy));
                 }
             }
-            result.setResult(gson.toJson(resultList));
-
             todoLogger.debug("There are a total of {} todos in the system. The result holds {} todos {}", mongodbTodoService.count(), resultList.size(), logEndMSG());
             responseStatus = HttpStatus.OK;
 
         } catch (IllegalArgumentException e) {
             responseStatus = HttpStatus.BAD_REQUEST;
-        } catch(Exception e){
+        } catch (Exception e) {
             responseStatus = HttpStatus.INTERNAL_SERVER_ERROR;
             e.printStackTrace();
-        }finally {
-            responseJson = gson.toJson(result);
+        } finally {
+            try {
+                result.setResult(adjustTodoListToExpectedResult(resultList));
+                responseJson = gson.toJson(result);
+            }
+            catch (Exception e){
+                e.printStackTrace();
+                responseJson = "";
+            }
         }
 
         logRequestDebug(startTime);
@@ -216,10 +227,10 @@ public class ServerController {
             responseStatus = HttpStatus.NOT_FOUND;
             result.setErrorMessage("Error: no such TODO with id " + id);
             logTodoError(result.getErrorMessage());
-        } catch(Exception e){
+        } catch (Exception e) {
             responseStatus = HttpStatus.INTERNAL_SERVER_ERROR;
             e.printStackTrace();
-        }finally {
+        } finally {
             responseJson = gson.toJson(result);
         }
 
@@ -252,7 +263,7 @@ public class ServerController {
             responseStatus = HttpStatus.NOT_FOUND;
             result.setErrorMessage("Error: no such TODO with id " + id);
             logTodoError(result.getErrorMessage());
-        }catch(Exception e){
+        } catch (Exception e) {
             responseStatus = HttpStatus.INTERNAL_SERVER_ERROR;
             e.printStackTrace();
         } finally {
@@ -261,6 +272,39 @@ public class ServerController {
 
         logRequestDebug(startTime);
         return ResponseEntity.status(responseStatus).body(responseJson);
+    }
+
+    @GetMapping("/todo/all")
+    public ResponseEntity<Result<String>> getAllTodosQuery(HttpServletRequest request) {
+        long startTime = System.currentTimeMillis();
+        logRequestInfo(request);
+        Result<String> result = new Result<>();
+        HttpStatus responseStatus;
+
+        try {
+            List<Todo> mongoTodos = new ArrayList<>(mongodbTodoService.list());
+            List<Todo> postgresTodos = new ArrayList<>(postgresTodoService.list());
+
+            String responseStr = buildResponseString(mongoTodos, postgresTodos);
+            result.setResult(responseStr);
+            responseStatus = HttpStatus.OK;
+        } catch (Exception e) {
+            responseStatus = HttpStatus.INTERNAL_SERVER_ERROR;
+            e.printStackTrace();
+        }
+
+        logRequestDebug(startTime);
+        return ResponseEntity.status(responseStatus).body(result);
+    }
+
+    private String buildResponseString(List<Todo> mongoTodos, List<Todo> postgresTodos) throws JsonProcessingException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        StringBuilder responseStr = new StringBuilder();
+        responseStr.append("MONGO\n");
+        responseStr.append(objectMapper.writeValueAsString(mongoTodos));
+        responseStr.append("\nPOSTGRES\n");
+        responseStr.append(objectMapper.writeValueAsString(postgresTodos));
+        return responseStr.toString();
     }
 
     private void logRequestDebug(long startTime) {
@@ -332,12 +376,29 @@ public class ServerController {
         todoLogger.error("{} {}", errorMSG, logEndMSG());
     }
 
-    private boolean todoTimeValid(long dueDate){
+    private boolean todoTimeValid(long dueDate) {
         return java.lang.System.currentTimeMillis() <= dueDate;
     }
 
-    private boolean todoExists(TodoMongodb todoMongodb, TodoPostgres todoPostgres){
+    private boolean todoExists(TodoMongodb todoMongodb, TodoPostgres todoPostgres) {
         return mongodbTodoService.existsTodoByTitle(todoMongodb) || postgresTodoService.existsTodoByTitle(todoPostgres);
+    }
+
+    private List<Map<String,Object>> adjustTodoListToExpectedResult(List<Todo> todosList) {
+        List<Map<String,Object>> ret = new ArrayList<>();
+        if (todosList != null) {
+            for (Todo todo : todosList) {
+                Map<String, Object> map = new LinkedHashMap<>();
+                map.put("id", todo.getId());
+                map.put("title", todo.getTitle());
+                map.put("content", todo.getContent());
+                map.put("status", todo.getState().name());
+                map.put("dueDate", todo.getDueDate());
+
+                ret.add(map);
+            }
+        }
+        return ret;
     }
 }
 

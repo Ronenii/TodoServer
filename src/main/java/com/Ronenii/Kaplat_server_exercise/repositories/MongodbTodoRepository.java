@@ -9,9 +9,9 @@ import java.util.List;
 
 @Repository
 public interface MongodbTodoRepository extends MongoRepository<TodoMongodb, String> {
-    TodoMongodb findTodoMongodbByRawid(int rawid);
+    TodoMongodb findTodoMongodbByRawid(int id);
     boolean existsTodoMongodbByTitle(String title);
-    List<TodoMongodb> findTodoMongodbByState(EState state);
-    void deleteTodoMongodbByRawid(int rawid);
+    List<TodoMongodb> findTodoMongodbByState(String state);
+    void deleteTodoMongodbByRawid(int id);
     long count();
 }

@@ -26,7 +26,7 @@ public class PostgresTodoService {
     }
 
     public TodoPostgres addTodo(TodoPostgres todo) {
-        todo.setRawid(null);
+        todo.setId((int)postgresTodoRepository.count() + 1);
         return postgresTodoRepository.save(todo);
     }
 
@@ -35,7 +35,7 @@ public class PostgresTodoService {
     }
 
     public TodoPostgres getById(Integer id) {
-        return postgresTodoRepository.findTodoPostgresByRawid(id);
+        return postgresTodoRepository.findTodoPostgresById(id);
     }
 
     public List<TodoPostgres> getTodosByState(EState state) {
@@ -52,7 +52,7 @@ public class PostgresTodoService {
     public List<TodoPostgres> getTodosByStateAndSortBy(EState state, ESortBy sortBy){
         List<TodoPostgres> todoList = getTodosByState(state);
         switch (sortBy) {
-            case ID -> todoList.sort(Comparator.comparing(TodoPostgres::getRawid));
+            case ID -> todoList.sort(Comparator.comparing(TodoPostgres::getId));
             case DUE_DATE -> todoList.sort(Comparator.comparing(TodoPostgres::getDueDate));
             case TITLE -> todoList.sort(Comparator.comparing(TodoPostgres::getTitle));
         }
@@ -60,7 +60,7 @@ public class PostgresTodoService {
         return todoList;
     }
 
-    public void deleteTodoById(Integer id){postgresTodoRepository.deleteByRawid(id);}
+    public void deleteTodoById(Integer id){postgresTodoRepository.deleteById(id);}
 
     public TodoPostgres updateTodo(Integer id, EState state){
         TodoPostgres todoToUpdate = getById(id);

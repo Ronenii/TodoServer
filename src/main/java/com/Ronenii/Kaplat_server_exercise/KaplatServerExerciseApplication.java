@@ -10,7 +10,11 @@ import org.springframework.context.annotation.Import;
 public class KaplatServerExerciseApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(KaplatServerExerciseApplication.class, args);
+		try{
+			SpringApplication.run(KaplatServerExerciseApplication.class, args);
+		}catch (Exception e){
+			e.printStackTrace();
+		}
 	}
 
 }
