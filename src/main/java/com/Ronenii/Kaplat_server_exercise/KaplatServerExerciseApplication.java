@@ -5,6 +5,8 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Import;
 
+import static java.lang.System.exit;
+
 @SpringBootApplication
 @Import(ServerController.class)
 public class KaplatServerExerciseApplication {
@@ -14,6 +16,7 @@ public class KaplatServerExerciseApplication {
 			SpringApplication.run(KaplatServerExerciseApplication.class, args);
 		}catch (Exception e){
 			e.printStackTrace();
+			exit(-1);
 		}
 	}
 
