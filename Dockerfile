@@ -4,7 +4,7 @@ FROM openjdk:17
 RUN mkdir /app
 
 # Copy the server JAR to the container
-COPY out/artifacts/Kaplat_server_excercise_jar/Kaplat_server_excercise.jar /app/Kaplat_server_excercise.jar
+COPY target/Kaplat_server_excercise-0.0.1-SNAPSHOT.jar /app/Kaplat_server_excercise.jar
 
 # Set the working directory inside the container
 WORKDIR /app
