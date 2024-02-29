@@ -16,7 +16,7 @@ public class KaplatServerExerciseApplication {
 			SpringApplication.run(KaplatServerExerciseApplication.class, args);
 		}catch (Exception e){
 			e.printStackTrace();
-			exit(-1);
+			exit(1);
 		}
 	}
 
