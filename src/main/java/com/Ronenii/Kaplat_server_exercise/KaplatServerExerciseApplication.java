@@ -18,6 +18,7 @@ public class KaplatServerExerciseApplication {
 			e.printStackTrace();
 			exit(1);
 		}
+		exit(0);
 	}
 
 }
