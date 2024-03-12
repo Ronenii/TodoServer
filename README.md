@@ -5,8 +5,9 @@
 * IDE: IntelliJ
 * Programming language: Java 17
 * Framework: Spring Boot
-* Logging framework: Logback (built in logger in spring boot)
 * Containerization: Docker
+* Databse: Postgresql, MongoDB
+* Logging framework: Logback (built in logger in spring boot)
 
 ## 2) Overview
 
@@ -19,13 +20,16 @@ frameworks to develop on.
 
 This assignment focused on these concepts:
 1. Client-server model
-2. Logging 
-3. Containerization 
+2. Database
+3. Containerization
+4. Logging 
+5. Deploying to a cloud platform
+
 
 ## 3) Usage
 
 ### 3.1) Properties
-The server's default listening port is 9285.
+The server container's default listening port is 3769.
 
 ### 3.2) Server endpoints:
 
@@ -72,9 +76,11 @@ The result will hold the (newly) assigned TODO number.
 
 Method: **GET**
 
-Query Parameter: **status**. Value: ALL, PENDING, LATE, DONE (in capital case only).
+Query Parameters: 
+- **status**. Value: ALL, PENDING, LATE, DONE (in capital case only).
+- **persistenceMethod**. Value: POSTGRES, MONGO.
 
-Returns the total number of TODOs in the system, according to the given filter.
+Returns the total number of TODOs in the system, according to the given filter. The persistence method dictates which of the DBs will the info come from.
 
 
 **3.2.4) Get TODOs data**
@@ -83,9 +89,10 @@ Returns the total number of TODOs in the system, according to the given filter.
 
 Method: **GET**
 
-Query Parameter: **status**. Value: ALL, PENDING, LATE, DONE.
-
-Query Parameter: **sortBy**. Value: ID, DUE_DATE, TITLE (Note: This is an optional query parameter. It does not have to appear.) 
+Query Parameters: 
+- **status**. Value: ALL, PENDING, LATE, DONE.
+- **sortBy**. Value: ID, DUE_DATE, TITLE (Note: This is an optional query parameter. It does not have to appear.)
+- **persistenceMethod**. Value: POSTGRES, MONGO.
 
 The response will be a json array. The array will hold json objects that describe a single todo. 
 Each TODO object holds:
@@ -115,9 +122,9 @@ If no TODOs are available the result is an empty array.
 
 Method: **PUT**
 
-Query Parameter: **id**. Number. The TODO id
-
-Query Parameter: **status**. The status to update. It can be PENDING, LATE, or DONE
+Query Parameters: 
+- **id**. Number. The TODO id
+- **status**. The status to update. It can be PENDING, LATE, or DONE
 
 If the TODO exists (according to the id), its status gets updated.
 
@@ -150,9 +157,9 @@ Returns the current level of the given logger.
 
 Method: **PUT**
 
-Query Parameter: **logger-name**. The name of the logger (request-logger or todo-logger).
-
-Query Parameter: **logger-level** Value: ERROR, INFO, DEBUG
+Query Parameters: 
+- **logger-name**. The name of the logger (request-logger or todo-logger).
+- **logger-level** Value: ERROR, INFO, DEBUG
 
 Sets the given logger's level to the given level.
 
@@ -174,26 +181,27 @@ Each log will hold the following structure ({} are placeholders):
 {date-time} {log-level}: {log-message} | request #{request-number}
 ```
 
-## 5) Containerization
+## 5) Deployment
 Docker is the containerization framework used for the exercise. 
 
-### 5.1) Pull the image
-In order to pull the image from dockerhub you need to use the following command:
+### 5.1) Setting up the environment
+In the release section of this repo you will find a docker-compose.yml file. Download this file and place it in your sdesired path.
+Make sure you have the docker engine installed and running.
+
+### 5.2) Run the server:
+In order to run the server you need to use the following command:
 ```diff
-docker pull ronenii/kaplat-docker-server:1.0
+ docker-compose up
 ```
-
-### 5.2) Run the image:
-In order to run the image  you need to use the following command:
-```diff
- docker run --name todo-server -d -p 3769:9285 ronenii/kaplat-docker-server:1.0
-```
-
-**5.2.1) Container properties**
-
-The container's default listening port for queries is `3769`.
+This will automatically run the server's conmtainer as well a container of MongoDB and a container of Postgresql for this server's todo Databases.
 
 **5.2.1) Usage**
 
 You can use the `curl` command if you can't reach the server with normal queries.
 Other than that the usage of the server is the same as described [here](#3-Usage).
+
+### 5.3) Shutting down the server
+In order to shut down the server you need to use the following command:
+```diff
+ docker-compose down
+```
